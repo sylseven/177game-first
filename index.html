@@ -72,11 +72,12 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
 .save-slot-title{font-family:'Cinzel',serif;color:var(--gold);font-size:1.05rem;letter-spacing:1.5px;margin-bottom:6px;}
 .save-slot-meta{font-size:0.8rem;color:var(--text-muted);margin-bottom:12px;}
 .map-toolbar{display:flex;gap:8px;padding:10px;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:3px 3px 0 0;border-bottom:none;flex-wrap:wrap;align-items:center;}
-.map-board-wrap{position:relative;width:100%;height:580px;overflow:hidden;border:1px solid var(--border-medium);border-radius:0 0 4px 4px;background:var(--bg-deep);}
-.map-board{position:absolute;top:50%;left:50%;width:1200px;height:800px;transform-origin:center;transition:transform 0.2s;background:radial-gradient(ellipse at center,var(--bg-elevated) 0%,var(--bg-deep) 100%),linear-gradient(rgba(167,139,250,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(167,139,250,0.04) 1px,transparent 1px);background-size:cover,25px 25px,25px 25px;box-shadow:inset 0 0 80px rgba(0,0,0,0.6);}
-.map-coord-info{position:absolute;bottom:10px;right:10px;z-index:5;font-family:'Cinzel',monospace;font-size:0.75rem;color:var(--gold);background:rgba(10,10,20,0.85);padding:4px 10px;border-radius:2px;border:1px solid var(--border-soft);}
+.map-board-wrap{position:relative;width:100%;height:580px;overflow:hidden;border:1px solid var(--border-medium);border-radius:0 0 4px 4px;background:var(--bg-deep);cursor:grab;}
+.map-board-wrap.panning{cursor:grabbing;}
+.map-board{position:absolute;top:50%;left:50%;width:1200px;height:800px;transform-origin:center;background:radial-gradient(ellipse at center,var(--bg-elevated) 0%,var(--bg-deep) 100%),linear-gradient(rgba(167,139,250,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(167,139,250,0.04) 1px,transparent 1px);background-size:cover,25px 25px,25px 25px;box-shadow:inset 0 0 80px rgba(0,0,0,0.6);}
+.map-coord-info{position:absolute;bottom:10px;right:10px;z-index:5;font-family:'Cinzel',monospace;font-size:0.75rem;color:var(--gold);background:rgba(10,10,20,0.85);padding:4px 10px;border-radius:2px;border:1px solid var(--border-soft);pointer-events:none;}
 .map-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;}
-.map-node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;cursor:grab;z-index:10;user-select:none;}
+.map-node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;cursor:grab;z-index:10;user-select:none;touch-action:none;}
 .map-node[data-locked="true"]{cursor:pointer;}
 .map-node[data-locked="true"]::after{content:"🔒";position:absolute;top:-8px;right:-12px;font-size:0.7rem;}
 .map-node:active{cursor:grabbing;}
@@ -109,6 +110,7 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
 .gallery-meta{padding:8px;font-size:0.78rem;color:var(--text-muted);display:flex;justify-content:space-between;}
 .status-fields{margin-top:10px;}
 .status-field-row{display:grid;grid-template-columns:1fr 1fr 80px;gap:8px;margin-bottom:8px;}
+/* VN */
 .vn-stage{position:fixed;inset:0;background:#000;z-index:9000;display:none;flex-direction:column;overflow:hidden;}
 .vn-stage.active{display:flex;}
 .vn-bg{position:absolute;inset:0;background-size:cover;background-position:center;background-color:#1a1a2e;transition:opacity 0.6s,background-image 0.6s;}
@@ -122,28 +124,52 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
 @keyframes vnFadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 .vn-sprite.center.fade-in{animation:vnFadeInCenter 0.5s;}
 @keyframes vnFadeInCenter{from{opacity:0;transform:translate(-50%,20px);}to{opacity:1;transform:translate(-50%,0);}}
-.vn-statusbar{position:absolute;top:20px;left:20px;right:20px;display:flex;justify-content:space-between;gap:14px;z-index:30;flex-wrap:wrap;pointer-events:none;}
-.vn-status-card{background:rgba(10,10,20,0.75);backdrop-filter:blur(10px);border:1px solid rgba(212,175,55,0.4);border-radius:6px;padding:10px 14px;min-width:200px;max-width:300px;pointer-events:auto;}
-.vn-status-name{font-family:'Cinzel',serif;color:var(--gold);font-size:0.85rem;letter-spacing:1.5px;margin-bottom:6px;border-bottom:1px solid rgba(212,175,55,0.2);padding-bottom:4px;}
-.vn-status-line{display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:3px;}
-.vn-status-line .k{color:var(--text-muted);}
-.vn-status-line .v{color:var(--accent-hover);font-weight:600;}
-.vn-textbox{position:absolute;left:5%;right:5%;bottom:20px;background:rgba(10,10,20,0.88);backdrop-filter:blur(12px);border:2px solid rgba(212,175,55,0.4);border-radius:8px;padding:24px 30px;min-height:140px;max-height:38%;z-index:20;overflow-y:auto;box-shadow:0 0 40px rgba(0,0,0,0.6),inset 0 0 30px rgba(167,139,250,0.05);}
-.vn-textbox::before{content:"";position:absolute;top:-2px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-.vn-name{display:inline-block;background:linear-gradient(135deg,rgba(212,175,55,0.3),rgba(167,139,250,0.3));border:1px solid rgba(212,175,55,0.5);padding:4px 16px;border-radius:3px;font-family:'Cinzel','Noto Serif SC',serif;font-size:1rem;color:var(--gold);letter-spacing:1.5px;margin-bottom:14px;font-weight:700;}
-.vn-text{font-size:1.05rem;line-height:1.85;color:var(--text-main);font-family:'Noto Serif SC',serif;white-space:pre-wrap;}
-.vn-text .quote{color:var(--gold);}
-.vn-choices{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);display:flex;flex-direction:column;gap:14px;z-index:25;width:60%;max-width:600px;}
-.vn-choice-btn{padding:14px 24px;background:rgba(10,10,20,0.85);backdrop-filter:blur(8px);border:1px solid rgba(167,139,250,0.5);color:var(--accent-hover);font-family:'Noto Serif SC',serif;font-size:1rem;border-radius:4px;cursor:pointer;transition:0.25s;text-align:left;letter-spacing:0.5px;}
-.vn-choice-btn:hover{background:rgba(167,139,250,0.2);border-color:var(--accent);transform:scale(1.02);box-shadow:0 0 20px rgba(167,139,250,0.3);}
-.vn-controls{position:absolute;top:20px;right:20px;display:flex;gap:8px;z-index:31;flex-wrap:wrap;justify-content:flex-end;max-width:60%;}
-.vn-ctrl-btn{padding:8px 14px;background:rgba(10,10,20,0.7);border:1px solid var(--border-soft);color:var(--text-muted);font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:1px;border-radius:3px;cursor:pointer;transition:0.2s;}
+.vn-statusbar{position:absolute;top:14px;left:14px;display:flex;flex-direction:column;gap:10px;z-index:30;pointer-events:none;max-width:60%;}
+.vn-status-card{background:rgba(10,10,20,0.78);backdrop-filter:blur(10px);border:1px solid rgba(212,175,55,0.4);border-radius:6px;padding:8px 12px;min-width:180px;max-width:320px;pointer-events:auto;}
+.vn-status-name{font-family:'Cinzel',serif;color:var(--gold);font-size:0.8rem;letter-spacing:1px;margin-bottom:5px;border-bottom:1px solid rgba(212,175,55,0.2);padding-bottom:3px;}
+.vn-status-line{display:flex;justify-content:space-between;font-size:0.74rem;margin-bottom:4px;align-items:center;gap:8px;}
+.vn-status-line .k{color:var(--text-muted);flex-shrink:0;white-space:nowrap;}
+.vn-status-line .v{color:var(--accent-hover);font-weight:600;text-align:right;white-space:nowrap;}
+.vn-status-bar{flex:1;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;min-width:50px;position:relative;}
+.vn-status-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width 0.4s;}
+.vn-status-bar-fill.over{background:linear-gradient(90deg,var(--gold),#ff6b6b);}
+.vn-status-bar-fill.neg{background:#666;}
+/* 控制栏改竖向 右上 */
+.vn-controls{position:absolute;top:14px;right:14px;display:flex;flex-direction:column;gap:6px;z-index:31;}
+.vn-ctrl-btn{padding:6px 10px;background:rgba(10,10,20,0.7);border:1px solid var(--border-soft);color:var(--text-muted);font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.5px;border-radius:3px;cursor:pointer;transition:0.2s;white-space:nowrap;text-align:center;}
 .vn-ctrl-btn:hover{color:var(--accent-hover);border-color:var(--accent);}
-.vn-input-bar{position:absolute;left:5%;right:5%;bottom:0;display:none;padding:10px;background:rgba(10,10,20,0.95);border-top:1px solid var(--border-medium);z-index:40;gap:8px;}
-.vn-input-bar.active{display:flex;}
-.vn-input-bar input{flex:1;padding:10px 14px;background:var(--bg-input);border:1px solid var(--border-soft);border-radius:20px;color:var(--text-main);font-family:inherit;outline:none;}
-.vn-typing{display:inline-block;width:8px;height:1em;background:var(--accent);margin-left:2px;animation:vnBlink 0.8s infinite;}
+.vn-ctrl-btn.on{color:var(--gold);border-color:var(--gold);}
+/* 文本框 */
+.vn-textbox{position:absolute;left:5%;right:5%;bottom:16px;background:rgba(10,10,20,0.88);backdrop-filter:blur(12px);border:2px solid rgba(212,175,55,0.4);border-radius:8px;padding:20px 26px;min-height:140px;max-height:38%;z-index:20;overflow-y:auto;box-shadow:0 0 40px rgba(0,0,0,0.6),inset 0 0 30px rgba(167,139,250,0.05);cursor:pointer;}
+.vn-textbox::before{content:"";position:absolute;top:-2px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.vn-textbox.has-more::after{content:"▼ 点击继续";position:absolute;bottom:6px;right:14px;font-size:0.7rem;color:var(--gold);font-family:'Cinzel',serif;animation:vnBlink 1.5s infinite;letter-spacing:1px;}
+.vn-name{display:inline-block;background:linear-gradient(135deg,rgba(212,175,55,0.3),rgba(167,139,250,0.3));border:1px solid rgba(212,175,55,0.5);padding:3px 14px;border-radius:3px;font-family:'Cinzel','Noto Serif SC',serif;font-size:0.95rem;color:var(--gold);letter-spacing:1.5px;margin-bottom:12px;font-weight:700;}
+.vn-text{font-size:1.02rem;line-height:1.85;color:var(--text-main);font-family:'Noto Serif SC',serif;white-space:pre-wrap;}
+.vn-text .quote{color:var(--gold);}
+/* 选项放到文本框上方 */
+.vn-choices{position:absolute;left:5%;right:5%;bottom:calc(38% + 30px);display:none;flex-direction:column;gap:8px;z-index:25;max-height:40%;overflow-y:auto;}
+.vn-choices.active{display:flex;}
+.vn-choice-btn{padding:10px 18px;background:rgba(10,10,20,0.92);backdrop-filter:blur(8px);border:1px solid rgba(167,139,250,0.5);color:var(--accent-hover);font-family:'Noto Serif SC',serif;font-size:0.93rem;border-radius:4px;cursor:pointer;transition:0.25s;text-align:left;letter-spacing:0.3px;}
+.vn-choice-btn:hover{background:rgba(167,139,250,0.2);border-color:var(--accent);transform:scale(1.01);box-shadow:0 0 15px rgba(167,139,250,0.3);}
+/* 多消息编辑栏 */
+.vn-msglist{position:absolute;left:5%;right:5%;bottom:calc(38% + 30px);max-height:35%;overflow-y:auto;display:none;flex-direction:column;gap:6px;z-index:24;background:rgba(10,10,20,0.85);backdrop-filter:blur(8px);border:1px solid var(--border-medium);border-radius:6px;padding:10px;}
+.vn-msglist.active{display:flex;}
+.vn-msg-item{display:flex;gap:6px;align-items:flex-start;padding:6px 10px;background:rgba(167,139,250,0.08);border-radius:3px;font-size:0.86rem;line-height:1.5;}
+.vn-msg-item .role{color:var(--gold);font-size:0.7rem;font-family:'Cinzel',serif;flex-shrink:0;padding:2px 6px;border:1px solid var(--border-soft);border-radius:2px;}
+.vn-msg-item.user .role{color:var(--accent);}
+.vn-msg-item .txt{flex:1;color:var(--text-main);word-break:break-word;cursor:text;}
+.vn-msg-item .txt[contenteditable="true"]{outline:1px solid var(--accent);padding:2px 4px;}
+.vn-msg-item .acts{display:flex;gap:4px;flex-shrink:0;}
+.vn-msg-item .acts button{padding:2px 6px;font-size:0.7rem;background:transparent;border:1px solid var(--border-soft);color:var(--text-muted);border-radius:2px;cursor:pointer;font-family:'Cinzel',serif;}
+.vn-msg-item .acts button:hover{color:var(--accent);border-color:var(--accent);}
+.vn-msg-item .acts .del:hover{color:var(--danger);border-color:var(--danger);}
+/* 输入栏 */
+.vn-input-bar{position:absolute;left:5%;right:5%;bottom:0;padding:10px;background:rgba(10,10,20,0.95);border-top:1px solid var(--border-medium);z-index:40;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.vn-input-bar input{flex:1;min-width:200px;padding:9px 12px;background:var(--bg-input);border:1px solid var(--border-soft);border-radius:20px;color:var(--text-main);font-family:inherit;outline:none;font-size:0.9rem;}
+.vn-input-bar input:focus{border-color:var(--accent);}
+.vn-typing{display:inline-block;width:6px;height:1em;background:var(--accent);margin-left:2px;animation:vnBlink 0.8s infinite;vertical-align:text-bottom;}
 @keyframes vnBlink{0%,50%{opacity:1;}51%,100%{opacity:0;}}
+/* 经典 */
 .game-window{background:var(--bg-card);border:1px solid var(--border-soft);border-radius:4px;overflow:hidden;display:flex;flex-direction:column;height:78vh;min-height:600px;box-shadow:var(--shadow-deep);}
 .game-header{background:var(--bg-elevated);padding:12px 20px;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center;font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:1.5px;flex-wrap:wrap;gap:8px;}
 .game-status{color:var(--accent);}
@@ -153,21 +179,28 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
 .msg-system{text-align:center;color:var(--text-muted);font-size:0.8rem;letter-spacing:2px;margin:14px 0;font-family:'Cinzel',serif;}
 .msg-system::before,.msg-system::after{content:" ◈ ";color:var(--gold);opacity:0.5;}
 .msg-ai{float:left;max-width:92%;}
-.msg-ai .bubble{background:linear-gradient(180deg,var(--bg-elevated),rgba(35,35,56,0.5));border:1px solid var(--border-soft);padding:18px 22px;border-radius:2px 12px 12px 12px;color:var(--text-main);font-size:1rem;}
+.msg-ai .bubble{background:linear-gradient(180deg,var(--bg-elevated),rgba(35,35,56,0.5));border:1px solid var(--border-soft);padding:18px 22px;border-radius:2px 12px 12px 12px;color:var(--text-main);font-size:1rem;position:relative;}
 .msg-player{float:right;max-width:85%;}
-.msg-player .bubble{background:linear-gradient(180deg,rgba(167,139,250,0.15),rgba(167,139,250,0.05));border:1px solid var(--border-medium);padding:14px 18px;border-radius:12px 2px 12px 12px;color:var(--text-main);}
+.msg-player .bubble{background:linear-gradient(180deg,rgba(167,139,250,0.15),rgba(167,139,250,0.05));border:1px solid var(--border-medium);padding:14px 18px;border-radius:12px 2px 12px 12px;color:var(--text-main);position:relative;}
+.msg-actions{display:flex;gap:4px;margin-top:6px;justify-content:flex-end;}
+.msg-actions button{padding:2px 8px;font-size:0.7rem;background:transparent;border:1px solid var(--border-soft);color:var(--text-muted);border-radius:2px;cursor:pointer;font-family:'Cinzel',serif;}
+.msg-actions button:hover{color:var(--accent);border-color:var(--accent);}
+.msg-actions .del:hover{color:var(--danger);border-color:var(--danger);}
 .choices-area{display:flex;flex-direction:column;gap:8px;margin-top:14px;clear:both;float:left;max-width:92%;width:100%;}
 .choice-btn{padding:12px 16px;background:var(--bg-input);border:1px solid var(--border-soft);color:var(--accent-hover);border-radius:2px;text-align:left;font-family:inherit;font-size:0.95rem;cursor:pointer;transition:0.25s;position:relative;padding-left:36px;}
 .choice-btn::before{content:"❖";position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--accent);opacity:0.6;}
 .choice-btn:hover{background:rgba(167,139,250,0.08);border-color:var(--accent);transform:translateX(4px);}
 .control-row{padding:10px 16px;background:var(--bg-elevated);border-top:1px solid var(--border-soft);display:flex;gap:8px;flex-wrap:wrap;}
-.input-area{padding:14px 16px;background:var(--bg-card);border-top:1px solid var(--border-soft);display:flex;gap:10px;align-items:center;}
-.action-input{flex:1;padding:12px 18px;background:var(--bg-input);border:1px solid var(--border-soft);border-radius:24px;color:var(--text-main);font-family:inherit;font-size:0.95rem;outline:none;transition:0.25s;}
+.input-area{padding:14px 16px;background:var(--bg-card);border-top:1px solid var(--border-soft);display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.action-input{flex:1;min-width:200px;padding:12px 18px;background:var(--bg-input);border:1px solid var(--border-soft);border-radius:24px;color:var(--text-main);font-family:inherit;font-size:0.95rem;outline:none;transition:0.25s;}
 .action-input:focus{border-color:var(--accent);box-shadow:var(--glow);}
-.send-btn{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#7c5dd8);color:#fff;border:none;cursor:pointer;font-size:1.2rem;flex-shrink:0;box-shadow:0 4px 15px rgba(167,139,250,0.3);transition:0.2s;}
-.send-btn:hover{transform:rotate(45deg) scale(1.05);}
+.send-btn{padding:10px 16px;border-radius:24px;background:linear-gradient(135deg,var(--accent),#7c5dd8);color:#fff;border:none;cursor:pointer;font-size:0.9rem;flex-shrink:0;box-shadow:0 4px 15px rgba(167,139,250,0.3);transition:0.2s;font-family:inherit;}
+.send-btn:hover{transform:scale(1.05);}
 .send-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.modal{display:none;position:fixed;inset:0;background:rgba(10,10,20,0.85);backdrop-filter:blur(8px);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.go-btn{padding:10px 20px;border-radius:24px;background:linear-gradient(135deg,var(--gold),#b8941f);color:#0a0a14;border:none;cursor:pointer;font-size:0.9rem;font-weight:700;flex-shrink:0;box-shadow:0 4px 15px rgba(212,175,55,0.3);transition:0.2s;font-family:'Cinzel',inherit;letter-spacing:1px;}
+.go-btn:hover{transform:scale(1.05);}
+.go-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.modal{display:none;position:fixed;inset:0;background:rgba(10,10,20,0.85);backdrop-filter:blur(8px);z-index:10000;align-items:center;justify-content:center;padding:20px;}
 .modal.show{display:flex;}
 .modal-content{background:var(--bg-card);border:1px solid var(--border-medium);border-radius:4px;padding:28px;max-width:700px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-deep);}
 ::-webkit-scrollbar{width:8px;height:8px;}
@@ -194,6 +227,17 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
 .theme-chip{padding:10px 12px;background:var(--bg-input);border:1px solid var(--border-soft);border-radius:3px;cursor:pointer;font-size:0.85rem;text-align:center;transition:0.2s;color:var(--text-muted);}
 .theme-chip:hover{border-color:var(--accent);color:var(--accent-hover);background:rgba(167,139,250,0.05);}
 .theme-chip .num{display:block;font-family:'Cinzel',monospace;font-size:0.7rem;color:var(--gold);margin-bottom:2px;}
+.codex-block{background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:4px;padding:14px;margin-bottom:12px;}
+.codex-block-title{font-family:'Cinzel',serif;color:var(--accent);font-size:0.9rem;letter-spacing:1px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+@media (max-width:600px){
+  .vn-controls{top:8px;right:8px;gap:4px;}
+  .vn-ctrl-btn{font-size:0.65rem;padding:4px 8px;}
+  .vn-statusbar{top:8px;left:8px;max-width:55%;}
+  .vn-status-card{min-width:140px;max-width:220px;padding:6px 10px;}
+  .vn-textbox{left:3%;right:3%;padding:14px 18px;min-height:120px;}
+  .vn-text{font-size:0.95rem;}
+  .vn-choices{left:3%;right:3%;bottom:calc(38% + 24px);}
+}
 </style>
 <style id="customStyle"></style>
 </head>
@@ -222,7 +266,7 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
   <!-- 引擎 -->
   <div id="tab-api" class="tab-content active">
     <div class="card">
-      <div class="card-title"><span><span class="icon">◈</span> ENGINE · 文本引擎</span><span id="apiStatus" class="badge">未连接</span></div>
+      <div class="card-title"><span><span class="icon">◈</span> 文本引擎</span><span id="apiStatus" class="badge">未连接</span></div>
       <div class="grid-2">
         <div class="form-group"><label class="form-label">供应商</label>
           <select id="provider" class="form-control"><option value="openai">OpenAI 兼容</option><option value="gemini">Gemini</option><option value="anthropic">Claude</option></select></div>
@@ -234,13 +278,12 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
           <div style="display:flex;gap:8px;"><input type="text" id="model" class="form-control" placeholder="deepseek-chat"><button class="btn btn-ghost" onclick="fetchModels()" style="white-space:nowrap;">拉取</button></div></div>
         <div class="form-group"><label class="form-label">温度</label><input type="number" id="temperature" class="form-control" value="0.85" step="0.05" min="0" max="2"></div>
       </div>
-      <select id="modelList" class="form-control" style="display:none;margin-top:8px;" onchange="$('model').value=this.value"></select>
+      <select id="modelList" class="form-control" style="display:none;margin-top:8px;" onchange="document.getElementById('model').value=this.value"></select>
       <div class="flex-row" style="margin-top:18px;">
         <button class="btn btn-primary" onclick="testApi()">⚡ 测试连接</button>
         <button class="btn btn-gold" onclick="saveConfig()">保存设定</button>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> API 预设管理</span></div>
       <div class="flex-row" style="margin-bottom:12px;">
@@ -252,13 +295,11 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
         <button class="btn btn-primary" onclick="saveApiPreset()">存为预设</button>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> 数据传承</span></div>
-      <p class="hint">支持导入「同人文生成器」备份继承全部预设。可导出文游全量数据。</p>
       <div class="grid-2">
-        <button class="btn btn-primary" onclick="$('importFile').click()">⬇ 导入数据 / 同人文备份</button>
-        <button class="btn btn-gold" onclick="exportAll()">⬆ 导出全部数据</button>
+        <button class="btn btn-primary" onclick="document.getElementById('importFile').click()">⬇ 导入数据</button>
+        <button class="btn btn-gold" onclick="exportAll()">⬆ 导出全部</button>
         <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importAll(event)">
       </div>
     </div>
@@ -268,52 +309,43 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
   <div id="tab-img" class="tab-content">
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> 生图引擎配置</span><span id="imgApiStatus" class="badge">未配置</span></div>
-      <p class="hint">独立配置生图 API。支持 OpenAI DALL-E / SD WebUI / 其他兼容接口。</p>
       <div class="grid-2">
         <div class="form-group"><label class="form-label">类型</label>
-          <select id="imgProvider" class="form-control"><option value="openai">OpenAI 图像兼容</option><option value="sd">Stable Diffusion WebUI</option></select></div>
+          <select id="imgProvider" class="form-control"><option value="openai">OpenAI 图像兼容</option><option value="sd">SD WebUI</option></select></div>
         <div class="form-group"><label class="form-label">Base URL</label><input type="text" id="imgBaseUrl" class="form-control" placeholder="https://api.openai.com/v1 或 http://127.0.0.1:7860"></div>
       </div>
-      <div class="form-group"><label class="form-label">API Key（SD 留空）</label><input type="text" id="imgApiKey" class="form-control" autocomplete="off" style="-webkit-text-security:disc;"></div>
+      <div class="form-group"><label class="form-label">API Key</label><input type="text" id="imgApiKey" class="form-control" autocomplete="off" style="-webkit-text-security:disc;"></div>
       <div class="grid-3">
-        <div class="form-group"><label class="form-label">模型</label><input type="text" id="imgModel" class="form-control" value="dall-e-3"></div>
+        <div class="form-group"><label class="form-label">模型 <span id="imgModelCount" class="badge" style="margin-left:6px;"></span></label>
+          <div style="display:flex;gap:6px;"><input type="text" id="imgModel" class="form-control" value="dall-e-3"><button class="btn btn-ghost" onclick="fetchImgModels()" style="padding:8px 10px;">拉取</button></div></div>
         <div class="form-group"><label class="form-label">尺寸</label>
           <select id="imgSize" class="form-control"><option>1024x1024</option><option>1792x1024</option><option>1024x1792</option><option>512x512</option><option>768x768</option></select></div>
-        <div class="form-group"><label class="form-label">质量(DALL-E3)</label>
+        <div class="form-group"><label class="form-label">质量</label>
           <select id="imgQuality" class="form-control"><option value="">默认</option><option value="standard">标准</option><option value="hd">高清</option></select></div>
       </div>
-      <button class="btn btn-gold" onclick="saveConfig()">保存生图配置</button>
+      <select id="imgModelList" class="form-control" style="display:none;margin-bottom:14px;" onchange="document.getElementById('imgModel').value=this.value"></select>
+      <div class="flex-row">
+        <button class="btn btn-primary" onclick="testImgApi()">⚡ 测试连接</button>
+        <button class="btn btn-gold" onclick="saveConfig()">保存配置</button>
+      </div>
     </div>
-
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> 创作工坊</span></div>
-      <div class="form-group">
-        <label class="form-label">提示词</label>
-        <textarea id="imgPrompt" class="form-control" style="min-height:90px;" placeholder="如：a cyberpunk city at night, neon lights, anime style..."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">负面提示词（仅 SD 有效）</label>
-        <textarea id="imgNegative" class="form-control" placeholder="lowres, bad anatomy..."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">参考图（可选）</label>
-        <input type="file" id="imgRefFile" accept="image/*" class="form-control" onchange="previewRef(event)">
-        <div id="imgRefPreview" style="margin-top:10px;"></div>
-      </div>
+      <div class="form-group"><label class="form-label">提示词</label><textarea id="imgPrompt" class="form-control" style="min-height:90px;"></textarea></div>
+      <div class="form-group"><label class="form-label">负面词(SD)</label><textarea id="imgNegative" class="form-control"></textarea></div>
+      <div class="form-group"><label class="form-label">参考图</label><input type="file" id="imgRefFile" accept="image/*" class="form-control" onchange="previewRef(event)"><div id="imgRefPreview" style="margin-top:10px;"></div></div>
       <div class="flex-row">
-        <button class="btn btn-primary" onclick="aiEnhancePrompt()">✨ AI 优化提示词</button>
-        <button class="btn btn-gold" onclick="generateImage()">⚡ 生成图像</button>
+        <button class="btn btn-primary" onclick="aiEnhancePrompt()">✨ AI 优化</button>
+        <button class="btn btn-gold" onclick="generateImage()">⚡ 生成</button>
         <span id="imgGenStatus" class="badge">待命</span>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> 绘卷收藏</span><span id="galleryCount" class="badge">0</span></div>
-      <p class="hint">点击图片可设为 VN 背景 / 添加为立绘。</p>
       <div class="flex-row" style="margin-bottom:12px;">
-        <button class="btn btn-info" onclick="$('uploadImgFile').click()">📤 上传本地图片</button>
+        <button class="btn btn-info" onclick="document.getElementById('uploadImgFile').click()">📤 上传</button>
         <input type="file" id="uploadImgFile" accept="image/*" multiple style="display:none;" onchange="uploadLocalImages(event)">
-        <button class="btn btn-danger" onclick="clearGallery()">清空图库</button>
+        <button class="btn btn-danger" onclick="clearGallery()">清空</button>
       </div>
       <div id="galleryGrid" class="gallery-grid"></div>
     </div>
@@ -322,8 +354,8 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
   <!-- 角色 -->
   <div id="tab-role" class="tab-content">
     <div class="card">
-      <div class="card-title"><span><span class="icon">◈</span> 用户档案 · 主角(我)</span>
-        <button class="btn btn-info" onclick="$('userImportFile').click()" style="font-size:0.78rem;padding:6px 12px;">📄 AI 智能导入</button>
+      <div class="card-title"><span><span class="icon">◈</span> 用户档案</span>
+        <button class="btn btn-info" onclick="document.getElementById('userImportFile').click()" style="font-size:0.78rem;padding:6px 12px;">📄 导入文档</button>
       </div>
       <input type="file" id="userImportFile" accept=".txt,.docx" style="display:none;" onchange="aiParseDocToUser(event)">
       <div class="grid-3">
@@ -334,45 +366,37 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
       <div class="form-group"><label class="form-label">身份/职业</label><input type="text" id="userRole" class="form-control"></div>
       <div class="form-group"><label class="form-label">性格</label><textarea id="userPersonality" class="form-control"></textarea></div>
       <div class="form-group"><label class="form-label">外貌</label><textarea id="userAppearance" class="form-control"></textarea></div>
-      <div class="form-group"><label class="form-label">背景/经历</label><textarea id="userBackground" class="form-control"></textarea></div>
+      <div class="form-group"><label class="form-label">背景/经历</label><textarea id="userBackground" class="form-control" style="min-height:120px;"></textarea></div>
       <div class="divider"></div>
       <div class="card-title" style="font-size:0.95rem;">📊 用户状态栏</div>
+      <p class="hint">状态字段无上下限。可自定义初始值（如「好感度=200%」或负值）。AI 会根据剧情自动加减。格式 <code>当前/上限</code> 时显示进度条（支持超过 100% 和负值）。</p>
       <div id="userStatus" class="status-fields"></div>
       <button class="btn btn-ghost" onclick="addStatusField('user')" style="margin-top:8px;">➕ 添加状态字段</button>
       <div class="divider"></div>
       <div class="card-title" style="font-size:0.95rem;">🎭 用户立绘</div>
       <input type="file" id="userSpriteFile" accept="image/*" multiple style="display:none;" onchange="uploadSprites('user',event)">
-      <button class="btn btn-info" onclick="$('userSpriteFile').click()">📤 上传立绘</button>
+      <button class="btn btn-info" onclick="document.getElementById('userSpriteFile').click()">📤 上传立绘</button>
       <div id="userSprites" class="sprite-grid"></div>
     </div>
-
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> 陪同者</span><span class="badge">共 <b id="compCount">0</b> 位</span></div>
       <div class="flex-row" style="margin-bottom:16px;">
-        <button class="btn btn-primary" onclick="addCompanion()">➕ 新增陪同者</button>
-        <button class="btn btn-info" onclick="$('compImportFile').click()">📄 AI 智能导入</button>
+        <button class="btn btn-primary" onclick="addCompanion()">➕ 新增</button>
+        <button class="btn btn-info" onclick="document.getElementById('compImportFile').click()">📄 导入</button>
         <input type="file" id="compImportFile" accept=".txt,.docx" style="display:none;" onchange="aiParseDocToCompanion(event)">
       </div>
       <div id="companionList"></div>
     </div>
   </div>
 
-  <!-- 法典 -->
+  <!-- 法典（全部可编辑） -->
   <div id="tab-preset" class="tab-content">
     <div class="card">
-      <div class="card-title"><span><span class="icon">◈</span> 法典挂载 · 同人文预设继承</span></div>
-      <div class="grid-3">
-        <div class="form-group"><label class="form-label">粉丝圈/IP</label><select id="bindFandom" class="form-control"><option value="">--</option></select></div>
-        <div class="form-group"><label class="form-label">关系</label><select id="bindRelationship" class="form-control"><option value="">--</option></select></div>
-        <div class="form-group"><label class="form-label">环境</label><select id="bindSetting" class="form-control"><option value="">--</option></select></div>
-        <div class="form-group"><label class="form-label">向性</label><select id="bindOrientation" class="form-control"><option value="">--</option></select></div>
-        <div class="form-group"><label class="form-label">文风</label><select id="bindStyle" class="form-control"><option value="">--</option></select></div>
-        <div class="form-group"><label class="form-label">剧情</label><select id="bindPlot" class="form-control"><option value="">--</option></select></div>
+      <div class="card-title"><span><span class="icon">◈</span> 法典挂载</span>
+        <button class="btn btn-info" onclick="document.getElementById('codexImportFile').click()" style="font-size:0.78rem;padding:6px 12px;">⬇ 同人文备份继承</button>
+        <input type="file" id="codexImportFile" accept=".json" style="display:none;" onchange="importCodexJson(event)">
       </div>
-      <div class="form-group" style="margin-top:14px;">
-        <label class="form-label">📚 世界书词条（多选）</label>
-        <div id="bindWorldbook" class="check-list"><div class="hint">未导入数据</div></div>
-      </div>
+      <p class="hint">下方所有分类都可自由编辑/添加/删除。也可从同人文备份一键导入。</p>
       <div class="form-group">
         <label class="form-label">世界观背景</label>
         <textarea id="worldSetting" class="form-control" style="min-height:100px;"></textarea>
@@ -381,8 +405,11 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
         <label class="form-label">额外指令</label>
         <textarea id="extraInstruction" class="form-control"></textarea>
       </div>
-      <button class="btn btn-gold" onclick="saveConfig()" style="width:100%;">⚜ 保存挂载</button>
+      <button class="btn btn-gold" onclick="saveConfig()" style="width:100%;">⚜ 保存基础</button>
     </div>
+
+    <!-- 6 个分类区 + 世界书 -->
+    <div id="codexCategories"></div>
 
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> NPC · 配角池</span>
@@ -395,17 +422,14 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
   <div id="tab-memory" class="tab-content">
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> 记忆秘藏</span>
-        <button class="btn btn-info" onclick="autoSummarize()" style="font-size:0.78rem;padding:6px 12px;">🤖 自动归纳近期</button></div>
+        <button class="btn btn-info" onclick="autoSummarize()" style="font-size:0.78rem;padding:6px 12px;">🤖 自动归纳</button></div>
       <div class="stats-bar">
-        <span>总数<b id="memTotal">0</b></span>
-        <span>📌钉<b id="memPin">0</b></span>
-        <span>🔴核<b id="memHigh">0</b></span>
-        <span>🟣剧<b id="memMid">0</b></span>
-        <span>⚪琐<b id="memLow">0</b></span>
-        <span>字数<b id="memChars">0</b></span>
+        <span>总数<b id="memTotal">0</b></span><span>📌钉<b id="memPin">0</b></span>
+        <span>🔴核<b id="memHigh">0</b></span><span>🟣剧<b id="memMid">0</b></span>
+        <span>⚪琐<b id="memLow">0</b></span><span>字数<b id="memChars">0</b></span>
       </div>
-      <div class="grid-2" style="grid-template-columns:2fr 1fr;gap:12px;">
-        <textarea id="memText" class="form-control" placeholder="输入记忆内容..."></textarea>
+      <div class="grid-2" style="grid-template-columns:2fr 1fr;">
+        <textarea id="memText" class="form-control" placeholder="输入记忆..."></textarea>
         <div>
           <select id="memLevel" class="form-control" style="margin-bottom:8px;">
             <option value="pin">📌 钉选</option><option value="high">★★★ 核心</option>
@@ -418,7 +442,7 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
       <div class="flex-row" style="margin-bottom:12px;">
         <input type="text" id="memSearch" class="form-control" placeholder="🔎 搜索" oninput="renderMem()" style="flex:1;">
         <select id="memFilter" class="form-control" onchange="renderMem()" style="width:160px;">
-          <option value="all">全部</option><option value="pin">📌 钉</option><option value="high">🔴 核</option><option value="mid">🟣 剧</option><option value="low">⚪ 琐</option></select>
+          <option value="all">全部</option><option value="pin">📌</option><option value="high">🔴</option><option value="mid">🟣</option><option value="low">⚪</option></select>
         <button class="btn btn-danger" onclick="clearAllMem()">清空</button>
       </div>
       <div id="memList"></div>
@@ -443,15 +467,13 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
       </div>
       <textarea id="locDesc" class="form-control" placeholder="详细描述..."></textarea>
     </div>
-
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> AI 自动布局</span></div>
       <div class="flex-row">
-        <input type="text" id="aiMapPrompt" class="form-control" placeholder="如：生成赛博朋克城市..." style="flex:1;">
+        <input type="text" id="aiMapPrompt" class="form-control" placeholder="如：赛博朋克城市..." style="flex:1;">
         <button class="btn btn-info" onclick="aiGenMap()">⚡ 生成</button>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> 世界舆图</span></div>
       <div class="map-toolbar">
@@ -459,7 +481,7 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
         <button class="btn btn-ghost" onclick="mapZoom(-0.1)">🔍−</button>
         <button class="btn btn-ghost" onclick="mapResetView()">⊕ 重置</button>
         <span class="badge" id="mapZoomLabel">缩放 100%</span>
-        <span class="hint" style="margin:0;">滚轮缩放·拖空白平移·拖节点·单击查看·双击删·🔒锁定</span>
+        <span class="hint" style="margin:0;font-size:0.75rem;">滚轮缩放·拖空白平移·拖节点·单击查看·双击删·🔒锁定</span>
       </div>
       <div class="map-board-wrap" id="mapBoardWrap">
         <div class="map-board" id="mapBoard">
@@ -473,7 +495,7 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
           <div class="popup-desc" id="popupDesc"></div>
           <div class="flex-row">
             <button class="btn btn-primary" onclick="teleportToNode()" style="flex:1;">⚡ 传送</button>
-            <button class="btn btn-ghost" onclick="toggleNodeLock()" id="lockBtn">🔓 锁定</button>
+            <button class="btn btn-ghost" onclick="toggleNodeLock()" id="lockBtn">🔓</button>
             <button class="btn btn-ghost" onclick="editNodeDesc()">编辑</button>
           </div>
         </div>
@@ -485,11 +507,10 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
   <div id="tab-script" class="tab-content">
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> 剧本中心</span></div>
-      <p class="hint">从内置 133+ 主题快速创建剧本，或自由新建。每个主题只是个标签，AI 会根据你的偏好（如骨科里你是妹妹/姐姐）生成完整剧本大纲。</p>
       <div class="flex-row" style="margin-bottom:14px;">
-        <button class="btn btn-gold" onclick="openThemePicker()">📚 从内置主题创建</button>
-        <button class="btn btn-primary" onclick="createScript()">➕ 新建空白</button>
-        <button class="btn btn-info" onclick="$('scriptImportFile').click()">📄 导入文档</button>
+        <button class="btn btn-gold" onclick="openThemePicker()">📚 从主题创建</button>
+        <button class="btn btn-primary" onclick="createScript()">➕ 新建</button>
+        <button class="btn btn-info" onclick="document.getElementById('scriptImportFile').click()">📄 导入</button>
         <input type="file" id="scriptImportFile" accept=".txt,.docx" style="display:none;" onchange="importScriptDoc(event)">
       </div>
     </div>
@@ -502,7 +523,7 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
   <!-- 神龛 -->
   <div id="tab-save" class="tab-content">
     <div class="card">
-      <div class="card-title"><span><span class="icon">◈</span> 神龛 · 存档回溯</span></div>
+      <div class="card-title"><span><span class="icon">◈</span> 神龛 · 存档</span></div>
       <div class="flex-row" style="margin-bottom:20px;">
         <input type="text" id="newSaveName" class="form-control" placeholder="存档名" style="flex:1;">
         <button class="btn btn-gold" onclick="createSave()">⚜ 镌刻</button>
@@ -515,10 +536,9 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
   <div id="tab-theme" class="tab-content">
     <div class="card">
       <div class="card-title"><span><span class="icon">◈</span> 美化沙盒</span></div>
-      <p class="hint">编辑 CSS 实时覆盖默认样式。</p>
       <div class="flex-row" style="margin-bottom:12px;">
         <button class="btn btn-primary" onclick="applyCustomCSS()">✨ 应用</button>
-        <button class="btn btn-ghost" onclick="loadDefaultCSS()">↺ 默认模板</button>
+        <button class="btn btn-ghost" onclick="loadDefaultCSS()">↺ 模板</button>
         <button class="btn btn-info" onclick="loadThemePreset('warm')">🌅 温暖</button>
         <button class="btn btn-info" onclick="loadThemePreset('ice')">❄️ 冰雪</button>
         <button class="btn btn-info" onclick="loadThemePreset('forest')">🌲 森林</button>
@@ -545,8 +565,9 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
         <button class="btn btn-ghost" onclick="resetGame()" style="flex:1;">⊘ 重启</button>
       </div>
       <div class="input-area">
-        <input type="text" id="actionInput" class="action-input" placeholder="书写你的行动...">
-        <button class="send-btn" onclick="submitAction()">➤</button>
+        <input type="text" id="actionInput" class="action-input" placeholder="书写你的行动... (可连发多条)">
+        <button class="send-btn" onclick="addUserMsg()">📝 添加</button>
+        <button class="go-btn" onclick="triggerAI()">▶ AI 继续</button>
       </div>
     </div>
   </div>
@@ -558,20 +579,24 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
   <div class="vn-sprites" id="vnSprites"></div>
   <div class="vn-statusbar" id="vnStatusbar"></div>
   <div class="vn-controls">
-    <button class="vn-ctrl-btn" onclick="vnSay()">💭 自由发言</button>
+    <button class="vn-ctrl-btn" id="autoGenBgBtn" onclick="toggleAutoGenBg()">🖼 自动:关</button>
+    <button class="vn-ctrl-btn" onclick="vnSay()">💭 发言</button>
+    <button class="vn-ctrl-btn" onclick="vnShowMsgList()">📝 编辑</button>
+    <button class="vn-ctrl-btn" onclick="vnTriggerAI()">▶ AI 继续</button>
     <button class="vn-ctrl-btn" onclick="rerollLast()">↺ 重Roll</button>
-    <button class="vn-ctrl-btn" onclick="vnSetBg()">🖼 换背景</button>
+    <button class="vn-ctrl-btn" onclick="vnSetBg()">🖼 背景</button>
     <button class="vn-ctrl-btn" onclick="vnLog()">📜 日志</button>
     <button class="vn-ctrl-btn" onclick="exitVNMode()">✕ 退出</button>
   </div>
+  <div class="vn-choices" id="vnChoices"></div>
+  <div class="vn-msglist" id="vnMsgList"></div>
   <div class="vn-textbox" id="vnTextbox" onclick="vnAdvance()">
     <div class="vn-name" id="vnName" style="display:none;"></div>
     <div class="vn-text" id="vnText"></div>
   </div>
-  <div class="vn-choices" id="vnChoices" style="display:none;"></div>
-  <div class="vn-input-bar" id="vnInputBar">
-    <input type="text" id="vnInput" placeholder="输入你的行动...">
-    <button class="vn-ctrl-btn" onclick="vnSubmitInput()">➤</button>
+  <div class="vn-input-bar" id="vnInputBar" style="display:none;">
+    <input type="text" id="vnInput" placeholder="输入行动...">
+    <button class="vn-ctrl-btn" onclick="vnSubmitInput()">📝 添加</button>
     <button class="vn-ctrl-btn" onclick="vnInputCancel()">✕</button>
   </div>
 </div>
@@ -598,8 +623,6 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
     </div>
   </div>
 </div>
-
-<!-- 图库选择 -->
 <div class="modal" id="picModal">
   <div class="modal-content" style="max-width:800px;">
     <div class="card-title" id="picModalTitle">选择图片</div>
@@ -607,50 +630,30 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
     <div class="flex-row" style="margin-top:14px;"><button class="btn btn-ghost" onclick="closeModal('picModal')">取消</button></div>
   </div>
 </div>
-
-<!-- VN 日志 -->
 <div class="modal" id="vnLogModal">
   <div class="modal-content" style="max-width:800px;">
-    <div class="card-title">📜 历史日志</div>
-    <div id="vnLogContent" style="max-height:60vh;overflow-y:auto;font-size:0.9rem;line-height:1.7;"></div>
+    <div class="card-title">📜 历史日志（可编辑）</div>
+    <div id="vnLogContent" style="max-height:65vh;overflow-y:auto;font-size:0.9rem;line-height:1.7;"></div>
     <div class="flex-row" style="margin-top:14px;"><button class="btn btn-ghost" onclick="closeModal('vnLogModal')">关闭</button></div>
   </div>
 </div>
-
-<!-- 剧本主题选择 -->
 <div class="modal" id="themeModal">
   <div class="modal-content">
     <div class="card-title">📚 选择剧本主题</div>
-    <p class="hint">点击主题进入偏好设置，AI 会基于主题与你的偏好生成完整剧本大纲。</p>
-    <input type="text" id="themeSearch" class="form-control" placeholder="🔎 搜索主题..." oninput="renderThemes()" style="margin-bottom:14px;">
+    <input type="text" id="themeSearch" class="form-control" placeholder="🔎 搜索..." oninput="renderThemes()" style="margin-bottom:14px;">
     <div id="themeGrid" class="theme-grid"></div>
     <div class="flex-row" style="margin-top:14px;"><button class="btn btn-ghost" onclick="closeModal('themeModal')">取消</button></div>
   </div>
 </div>
-
-<!-- 剧本主题偏好 -->
 <div class="modal" id="prefModal">
   <div class="modal-content">
-    <div class="card-title">🎭 剧本偏好设置 · <span id="prefTheme" style="color:var(--accent);"></span></div>
-    <p class="hint">详细描述你想要的设定（如"骨科pa"中：用户是妹妹 / 哥哥；治愈风 / 虐心；HE / BE 等）</p>
-    <div class="form-group">
-      <label class="form-label">用户视角与身份</label>
-      <input type="text" id="prefUserRole" class="form-control" placeholder="如：用户扮演妹妹（18岁 高三）">
-    </div>
-    <div class="form-group">
-      <label class="form-label">陪同者身份</label>
-      <input type="text" id="prefNpcRole" class="form-control" placeholder="如：陪同者是亲哥哥（22岁 大学生）">
-    </div>
-    <div class="form-group">
-      <label class="form-label">剧情走向偏好</label>
-      <textarea id="prefDirection" class="form-control" placeholder="情感基调 / 冲突点 / 想要的关键事件 / 结局走向..."></textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">字数 / 章节数</label>
-      <input type="text" id="prefLength" class="form-control" placeholder="如：6 章 · 每章约 2000 字">
-    </div>
+    <div class="card-title">🎭 剧本偏好 · <span id="prefTheme" style="color:var(--accent);"></span></div>
+    <div class="form-group"><label class="form-label">用户视角</label><input type="text" id="prefUserRole" class="form-control" placeholder="如：用户扮演妹妹"></div>
+    <div class="form-group"><label class="form-label">陪同者</label><input type="text" id="prefNpcRole" class="form-control"></div>
+    <div class="form-group"><label class="form-label">剧情走向</label><textarea id="prefDirection" class="form-control"></textarea></div>
+    <div class="form-group"><label class="form-label">篇幅</label><input type="text" id="prefLength" class="form-control" placeholder="6 章 · 每章 1500 字"></div>
     <div class="flex-row">
-      <button class="btn btn-gold" style="flex:1;" onclick="generateScriptFromTheme()">⚡ AI 生成完整剧本</button>
+      <button class="btn btn-gold" style="flex:1;" onclick="generateScriptFromTheme()">⚡ 生成</button>
       <button class="btn btn-ghost" onclick="closeModal('prefModal')">取消</button>
     </div>
   </div>
@@ -663,22 +666,16 @@ const esc = s => (s||"").replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&g
 const uid = () => Date.now()+Math.floor(Math.random()*1000);
 window.$ = $;
 
-// 133 个内置剧本主题
-const SCRIPT_THEMES = [
-"原作向if线","吸血鬼pa","摩登都市pa","花吐症pa","末世pa","霍格沃兹pa","古风pa","西欧pa","中恐pa","修仙pa",
-"西幻pa","变小","魔女pa","出租屋文学","学生时代","不xx就出不去的房间","公路pa","赛车pa","无限流pa","乐队pa",
-"职场pa","君臣pa","哨向","abo","警员pa","娱乐圈pa","师徒pa","骨科pa","捡手机","回到幼时pa",
-"失忆后一见钟情","吃醋","9号房间","xx相性一百问","艾斯爱慕","主仆pa","权谋pa","单性转","双性转","论坛体",
-"G向","养成pa","乡村pa","现代pa","童话pa","西部pa","日常","同居","异地pa","女仆装",
-"黑道pa","医患pa","赛博朋克pa","cake&fork","动物塑","食物塑","兽耳","破镜重圆","老夫老妻","相爱相杀",
-"狗仔与明星pa","共感娃娃","灵魂互换","杀青梗","观影体","发烧","醉酒","采访","恨海情天","史密斯夫妇",
-"轮回梗","aba修罗场","变猫/狗","先婚后爱","事后","青梅竹马","县城文学","幼稚园","民国pa","神话pa",
-"误会","失忆","穿越","人外","实验室pa","26字母","阴阳两隔","丧尸pa","结婚","生长痛",
-"抛油pa","神明&神父","教会pa","吐真剂","寿命论","狐狸窗","灵魂伴侣pa","暗恋pa","楚门的世界pa","人机恋",
-"师生pa","网黄pa","包养pa","杀手pa","宝可梦","后室pa","网恋被骗pa","明星粉丝pa","古欧贵族pa","租房撞鬼pa",
-"警匪pa","环太平洋pa","宝石之国pa","前世今生pa","搬家pa","伪人pa","华尔街pa","剧团pa","收藏家&收藏品pa","伪骨pa",
-"人类&妖pa","国师&皇帝pa","作者&作品pa","小王子&狐狸pa","梦女/男成真pa","总裁&社畜pa","草原民族pa","水煎","道士pa","跨越时空爱上你（君生我未生）",
-"鳏夫寡妇","底特律pa","雇主pa"
+const SCRIPT_THEMES = ["原作向if线","吸血鬼pa","摩登都市pa","花吐症pa","末世pa","霍格沃兹pa","古风pa","西欧pa","中恐pa","修仙pa","西幻pa","变小","魔女pa","出租屋文学","学生时代","不xx就出不去的房间","公路pa","赛车pa","无限流pa","乐队pa","职场pa","君臣pa","哨向","abo","警员pa","娱乐圈pa","师徒pa","骨科pa","捡手机","回到幼时pa","失忆后一见钟情","吃醋","9号房间","xx相性一百问","艾斯爱慕","主仆pa","权谋pa","单性转","双性转","论坛体","G向","养成pa","乡村pa","现代pa","童话pa","西部pa","日常","同居","异地pa","女仆装","黑道pa","医患pa","赛博朋克pa","cake&fork","动物塑","食物塑","兽耳","破镜重圆","老夫老妻","相爱相杀","狗仔与明星pa","共感娃娃","灵魂互换","杀青梗","观影体","发烧","醉酒","采访","恨海情天","史密斯夫妇","轮回梗","aba修罗场","变猫/狗","先婚后爱","事后","青梅竹马","县城文学","幼稚园","民国pa","神话pa","误会","失忆","穿越","人外","实验室pa","26字母","阴阳两隔","丧尸pa","结婚","生长痛","抛油pa","神明&神父","教会pa","吐真剂","寿命论","狐狸窗","灵魂伴侣pa","暗恋pa","楚门的世界pa","人机恋","师生pa","网黄pa","包养pa","杀手pa","宝可梦","后室pa","网恋被骗pa","明星粉丝pa","古欧贵族pa","租房撞鬼pa","警匪pa","环太平洋pa","宝石之国pa","前世今生pa","搬家pa","伪人pa","华尔街pa","剧团pa","收藏家&收藏品pa","伪骨pa","人类&妖pa","国师&皇帝pa","作者&作品pa","小王子&狐狸pa","梦女/男成真pa","总裁&社畜pa","草原民族pa","水煎","道士pa","跨越时空爱上你（君生我未生）","鳏夫寡妇","底特律pa","雇主pa"];
+
+const CODEX_CATS = [
+  {key:'fandom',label:'粉丝圈/IP',icon:'🎭'},
+  {key:'relationship',label:'关系模板',icon:'💞'},
+  {key:'setting',label:'环境/世界',icon:'🌍'},
+  {key:'orientation',label:'向性',icon:'💖'},
+  {key:'style',label:'文风',icon:'✒️'},
+  {key:'plot',label:'剧情结构',icon:'📜'},
+  {key:'worldbook',label:'世界书词条',icon:'📚'}
 ];
 
 let App = {
@@ -687,10 +684,10 @@ let App = {
     imgProvider:"openai",imgBaseUrl:"",imgApiKey:"",imgModel:"dall-e-3",imgSize:"1024x1024",imgQuality:"",
     worldSetting:"",
     user:{name:"",gender:"",age:"",role:"",personality:"",appearance:"",background:"",status:[],sprites:[]},
-    bindFandom:"",bindRelationship:"",bindSetting:"",bindOrientation:"",bindStyle:"",bindPlot:"",
-    bindWorldbook:[],extraInstruction:"",customCSS:"",vnCurrentBg:""
+    extraInstruction:"",customCSS:"",vnCurrentBg:"",autoGenBg:false,
+    codex:{fandom:[],relationship:[],setting:[],orientation:[],style:[],plot:[],worldbook:[]}
   },
-  apiPresets:{},presets:{},companions:[],npcs:[],
+  apiPresets:{},companions:[],npcs:[],
   memories:[],mapNodes:[],saves:{},scripts:[],gallery:[],
   gameHistory:[],currentLoc:"",roundCount:0
 };
@@ -698,19 +695,26 @@ let abortCtrl=null,isGen=false,partialOut="",lastAction="";
 let currentPopupId=null,currentScriptId=null;
 let mapZoomLevel=1,mapPanX=0,mapPanY=0;
 let imgRefData=null;
-let vnTypingTimer=null,vnFullText="",vnCurrentIdx=0;
 let pendingTheme="";
+let isAutoGenBgBusy=false;
+// VN 逐句状态
+let vnSentences=[];
+let vnSentIdx=0;
+let vnCurrentSpeaker=null;
+let vnPendingChoices=[];
 
-function save(){try{localStorage.setItem("177_textgame_v7",JSON.stringify(App));}catch(e){toast("数据过大",'err');}}
+function save(){try{localStorage.setItem("177_textgame_v9",JSON.stringify(App));}catch(e){toast("数据过大",'err');}}
 function load(){
-  const s=localStorage.getItem("177_textgame_v7");
-  if(s){const d=JSON.parse(s);App={...App,...d,config:{...App.config,...(d.config||{}),user:{...App.config.user,...((d.config||{}).user||{})}}};
+  const s=localStorage.getItem("177_textgame_v9");
+  if(s){const d=JSON.parse(s);App={...App,...d,config:{...App.config,...(d.config||{}),user:{...App.config.user,...((d.config||{}).user||{})},codex:{...App.config.codex,...((d.config||{}).codex||{})}}};
     if(!Array.isArray(App.companions))App.companions=[];
     if(!Array.isArray(App.npcs))App.npcs=[];
     if(!Array.isArray(App.scripts))App.scripts=[];
     if(!Array.isArray(App.gallery))App.gallery=[];
     if(!App.config.user.status)App.config.user.status=[];
     if(!App.config.user.sprites)App.config.user.sprites=[];
+    if(!App.config.codex)App.config.codex={};
+    CODEX_CATS.forEach(c=>{if(!Array.isArray(App.config.codex[c.key]))App.config.codex[c.key]=[];});
   }
 }
 
@@ -728,10 +732,9 @@ function toast(msg,type=''){
   const t=document.createElement('div');t.className='toast-temp';
   const colors={ok:'var(--success)',err:'var(--danger)','':'var(--accent)'};
   t.style.cssText=`position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid ${colors[type]};color:${colors[type]};padding:12px 24px;border-radius:3px;z-index:99999;font-size:0.9rem;letter-spacing:1px;box-shadow:var(--shadow-deep);font-family:Cinzel,serif;`;
-  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);
+  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);
 }
 
-// ========== 配置 ==========
 function refreshConfigUI(){
   const c=App.config;
   ["provider","baseUrl","apiKey","model","temperature","worldSetting","extraInstruction",
@@ -742,26 +745,24 @@ function refreshConfigUI(){
   $("userName").value=u.name||"";$("userGender").value=u.gender||"";$("userAge").value=u.age||"";
   $("userRole").value=u.role||"";$("userPersonality").value=u.personality||"";
   $("userAppearance").value=u.appearance||"";$("userBackground").value=u.background||"";
-  renderUserStatus();renderUserSprites();renderPresetSelectors();
-  ["bindFandom","bindRelationship","bindSetting","bindOrientation","bindStyle","bindPlot"].forEach(id=>{
-    if($(id))$(id).value=c[id]||"";
-  });
-  document.querySelectorAll('.wb-cb').forEach(cb=>cb.checked=(c.bindWorldbook||[]).includes(cb.value));
+  renderUserStatus();renderUserSprites();renderCodex();
   refreshApiPresetList();renderCompanions();renderNpcs();renderGallery();
   if(c.customCSS)applyCustomCSS();
+  if($("autoGenBgBtn")){
+    $("autoGenBgBtn").textContent=c.autoGenBg?"🖼 自动:开":"🖼 自动:关";
+    $("autoGenBgBtn").classList.toggle('on',!!c.autoGenBg);
+  }
 }
 
 function saveConfig(){
   const c=App.config;
   ["provider","baseUrl","apiKey","model","worldSetting","extraInstruction",
-   "imgProvider","imgBaseUrl","imgApiKey","imgModel","imgSize","imgQuality","customCSS",
-   "bindFandom","bindRelationship","bindSetting","bindOrientation","bindStyle","bindPlot"].forEach(id=>{
+   "imgProvider","imgBaseUrl","imgApiKey","imgModel","imgSize","imgQuality","customCSS"].forEach(id=>{
     if($(id))c[id]=$(id).value;
   });
   c.baseUrl=(c.baseUrl||"").replace(/\/$/,"");
   c.imgBaseUrl=(c.imgBaseUrl||"").replace(/\/$/,"");
   c.temperature=parseFloat($("temperature").value)||0.85;
-  c.bindWorldbook=Array.from(document.querySelectorAll('.wb-cb:checked')).map(cb=>cb.value);
   c.user.name=$("userName").value.trim();c.user.gender=$("userGender").value.trim();
   c.user.age=$("userAge").value.trim();c.user.role=$("userRole").value.trim();
   c.user.personality=$("userPersonality").value.trim();c.user.appearance=$("userAppearance").value.trim();
@@ -788,14 +789,14 @@ function addStatusField(target){addStatusFieldUI(target,"","");}
 function addStatusFieldUI(target,key,value){
   const id=target==='user'?'userStatus':null;
   const row=document.createElement('div');row.className='status-field-row';
-  row.innerHTML=`<input type="text" class="form-control" value="${esc(key)}" placeholder="字段(如:体力)">
-    <input type="text" class="form-control" value="${esc(value)}" placeholder="值(如:100/100)">
+  row.innerHTML=`<input type="text" class="form-control" value="${esc(key)}" placeholder="字段(如:好感度)">
+    <input type="text" class="form-control" value="${esc(value)}" placeholder="值(如:50/100 或 200%)">
     <button class="btn btn-danger" onclick="this.parentElement.remove();saveConfig();">删</button>`;
   $(id).appendChild(row);
   row.querySelectorAll('input').forEach(i=>i.addEventListener('blur',saveConfig));
 }
 
-// ========== API 预设 ==========
+// API 预设
 function refreshApiPresetList(){
   const sel=$("apiPresetList");sel.innerHTML='<option value="">-- 选择预设 --</option>';
   Object.keys(App.apiPresets).sort().forEach(n=>sel.innerHTML+=`<option value="${esc(n)}">${esc(n)}</option>`);
@@ -823,7 +824,6 @@ async function testApi(){
     status.textContent="已连接";status.className="badge ok";toast("◈ 通畅",'ok');
   }catch(e){status.textContent="失败";status.className="badge err";alert("失败："+e.message);}
 }
-
 async function fetchModels(){
   saveConfig();const c=App.config;if(!c.apiKey)return toast("先填 Key");
   try{
@@ -839,78 +839,125 @@ async function fetchModels(){
     }
     ms.sort((a,b)=>a.localeCompare(b));
     const sel=$("modelList");sel.style.display="block";
-    sel.innerHTML='<option value="">-- 选择模型 --</option>'+ms.map(m=>`<option>${esc(m)}</option>`).join("");
-    $("modelCount").textContent=ms.length+" 个";
-    toast(`◈ ${ms.length} 个模型(已排序)`,'ok');
+    sel.innerHTML='<option value="">-- 选择 --</option>'+ms.map(m=>`<option>${esc(m)}</option>`).join("");
+    $("modelCount").textContent=ms.length+" 个";toast(`◈ ${ms.length} 个`,'ok');
   }catch(e){toast("失败："+e.message,'err');}
 }
 
-// ========== 数据导入导出 ==========
+// 数据
 function exportAll(){
   const blob=new Blob([JSON.stringify(App,null,2)],{type:"application/json"});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=`177文游世界_${new Date().toISOString().slice(0,10)}.json`;a.click();
+  a.download=`177文游_${new Date().toISOString().slice(0,10)}.json`;a.click();
   toast("◈ 已导出",'ok');
 }
 function importAll(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();r.onload=()=>{
     try{const d=JSON.parse(r.result);
-      if(d.presets)App.presets=d.presets;
-      if(d.config&&d.config.apiKey){App.config.apiKey=d.config.apiKey;App.config.baseUrl=d.config.baseUrl||App.config.baseUrl;
-        App.config.provider=d.config.provider||App.config.provider;App.config.model=d.config.model||App.config.model;}
+      if(d.config){
+        Object.assign(App.config,d.config);
+        if(d.config.user)Object.assign(App.config.user,d.config.user);
+        if(d.config.codex){
+          CODEX_CATS.forEach(c=>{if(Array.isArray(d.config.codex[c.key]))App.config.codex[c.key]=d.config.codex[c.key];});
+        }
+      }
       ['apiPresets','companions','npcs','memories','mapNodes','saves','scripts','gallery','gameHistory'].forEach(k=>{if(d[k])App[k]=d[k];});
       save();refreshAll();toast("◈ 导入成功",'ok');
     }catch(err){alert("失败："+err.message);}
   };r.readAsText(f);e.target.value="";
 }
 
-// ========== 文档读取 ==========
-async function readDocFile(file){
-  if(file.name.endsWith('.txt'))return await file.text();
-  if(file.name.endsWith('.docx')){
-    const buf=await file.arrayBuffer();
-    const r=await mammoth.extractRawText({arrayBuffer:buf});return r.value;
-  }throw new Error("仅支持 .txt 或 .docx");
+// 同人文备份导入 → 转入 codex
+function importCodexJson(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      if(!d.presets)throw new Error("不是同人文备份格式");
+      const mapKeys={fandom:'fandom',relationship:'relationship',setting:'setting',orientation:'orientation',style:'style',plot:'plot',worldbook:'worldbook'};
+      let count=0;
+      Object.keys(mapKeys).forEach(k=>{
+        if(Array.isArray(d.presets[k])){
+          d.presets[k].forEach(p=>{
+            App.config.codex[mapKeys[k]].push({id:uid(),name:p.name||"未命名",desc:p.desc||"",keywords:(p.tags||[]).join(","),enabled:true});
+            count++;
+          });
+        }
+      });
+      save();renderCodex();toast(`◈ 导入 ${count} 条`,'ok');
+    }catch(err){alert("失败："+err.message);}
+  };r.readAsText(f);e.target.value="";
 }
+
+// 文档读取
+async function readDocFile(file){
+  if(file.name.toLowerCase().endsWith('.txt')){
+    try{const txt=await file.text();if(txt)return txt;}catch(e){}
+    return await new Promise((res,rej)=>{
+      const r=new FileReader();r.onload=()=>res(r.result||"");r.onerror=rej;r.readAsText(file,'UTF-8');
+    });
+  }
+  if(file.name.toLowerCase().endsWith('.docx')){
+    const buf=await file.arrayBuffer();
+    const r=await mammoth.extractRawText({arrayBuffer:buf});return r.value||"";
+  }
+  throw new Error("仅支持 .txt 或 .docx");
+}
+
 async function aiParseDocToUser(e){
   const f=e.target.files[0];if(!f)return;
-  if(!App.config.apiKey)return alert("先配置 API");
-  toast("◈ AI 识别中...");
-  try{
-    const txt=await readDocFile(f);
-    const sys=`角色档案解析器。从文本提取信息，严格 JSON：
+  toast("◈ 读取...");
+  let txt="";
+  try{txt=await readDocFile(f);}catch(err){alert("读取失败："+err.message);e.target.value="";return;}
+  if(!txt||!txt.trim()){alert("文档为空");e.target.value="";return;}
+  if(App.config.apiKey&&App.config.baseUrl){
+    try{
+      toast("◈ AI 识别中...");
+      const sys=`角色解析器。严格 JSON：
 {"name":"","gender":"","age":"","role":"","personality":"","appearance":"","background":""}
 仅 JSON。无信息填空。`;
-    const reply=await callAI([{role:"system",content:sys},{role:"user",content:txt.slice(0,8000)}],false);
-    const m=reply.match(/\{[\s\S]+\}/);if(!m)throw new Error("格式异常");
-    const obj=JSON.parse(m[0]);
-    if(obj.name)$("userName").value=obj.name;if(obj.gender)$("userGender").value=obj.gender;
-    if(obj.age)$("userAge").value=obj.age;if(obj.role)$("userRole").value=obj.role;
-    if(obj.personality)$("userPersonality").value=obj.personality;
-    if(obj.appearance)$("userAppearance").value=obj.appearance;
-    if(obj.background)$("userBackground").value=obj.background;
-    saveConfig();toast("◈ 已智能填入",'ok');
-  }catch(err){alert("失败："+err.message);}e.target.value="";
+      const reply=await callAI([{role:"system",content:sys},{role:"user",content:txt.slice(0,8000)}],false);
+      const m=reply.match(/\{[\s\S]+\}/);
+      if(m){
+        const obj=JSON.parse(m[0]);
+        let filled=0;
+        ['name','gender','age','role','personality','appearance','background'].forEach(k=>{
+          if(obj[k]){$("user"+k.charAt(0).toUpperCase()+k.slice(1)).value=obj[k];filled++;}
+        });
+        if(filled>0){saveConfig();toast(`◈ 填入 ${filled} 字段`,'ok');e.target.value="";return;}
+      }
+    }catch(err){console.warn(err);toast("⚠ AI 失败,降级",'err');}
+  }
+  $("userBackground").value=txt;saveConfig();toast("◈ 已填入背景",'ok');e.target.value="";
 }
 async function aiParseDocToCompanion(e){
   const f=e.target.files[0];if(!f)return;
-  if(!App.config.apiKey)return alert("先配置 API");
-  toast("◈ 解析中...");
-  try{
-    const txt=await readDocFile(f);
-    const sys=`角色解析器。严格 JSON：
+  toast("◈ 读取...");
+  let txt="";
+  try{txt=await readDocFile(f);}catch(err){alert("失败："+err.message);e.target.value="";return;}
+  if(!txt||!txt.trim()){alert("文档为空");e.target.value="";return;}
+  let parsed=null;
+  if(App.config.apiKey&&App.config.baseUrl){
+    try{
+      toast("◈ AI 解析...");
+      const sys=`角色解析器。严格 JSON：
 {"name":"","gender":"","age":"","role":"","personality":"","appearance":"","background":"","relation":""}
 仅 JSON。`;
-    const reply=await callAI([{role:"system",content:sys},{role:"user",content:txt.slice(0,8000)}],false);
-    const m=reply.match(/\{[\s\S]+\}/);if(!m)throw new Error("格式异常");
-    const obj=JSON.parse(m[0]);
-    addCompanion({...obj,name:obj.name||f.name.replace(/\.[^.]+$/,"")});
-    toast("◈ 已创建",'ok');
-  }catch(err){alert("失败："+err.message);}e.target.value="";
+      const reply=await callAI([{role:"system",content:sys},{role:"user",content:txt.slice(0,8000)}],false);
+      const m=reply.match(/\{[\s\S]+\}/);
+      if(m){
+        const obj=JSON.parse(m[0]);
+        if(Object.values(obj).filter(v=>v&&String(v).trim()).length>0)parsed=obj;
+      }
+    }catch(err){console.warn(err);}
+  }
+  if(parsed){addCompanion({...parsed,name:parsed.name||f.name.replace(/\.[^.]+$/,"")});toast("◈ AI 创建",'ok');}
+  else{addCompanion({name:f.name.replace(/\.[^.]+$/,""),background:txt});toast("◈ 已填入背景",'ok');}
+  e.target.value="";
 }
 
-// ========== 立绘 ==========
+// 立绘
 function fileToDataURL(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f);});}
 async function compressImage(dataUrl,maxW=600){
   return new Promise(res=>{
@@ -957,7 +1004,7 @@ function delSprite(target,id){
   save();if(target==='user')renderUserSprites();else renderCompanions();
 }
 
-// ========== 陪同者 ==========
+// 陪同者
 function renderCompanions(){
   const list=$("companionList");list.innerHTML="";
   $("compCount").textContent=App.companions.length;
@@ -989,7 +1036,7 @@ function renderCompanions(){
       <div class="card-title" style="font-size:0.85rem;">📊 状态栏</div><div>${statusHtml}</div>
       <button class="btn btn-ghost" style="margin-top:6px;" onclick="addCompStatus(${id})">➕ 状态</button>
       <div class="divider"></div>
-      <div class="card-title" style="font-size:0.85rem;">🎭 立绘 <button class="btn btn-info" style="font-size:0.7rem;padding:4px 10px;" onclick="document.getElementById('compSp_${id}').click()">📤 上传</button>
+      <div class="card-title" style="font-size:0.85rem;">🎭 立绘 <button class="btn btn-info" style="font-size:0.7rem;padding:4px 10px;" onclick="document.getElementById('compSp_${id}').click()">📤</button>
         <input type="file" id="compSp_${id}" accept="image/*" multiple style="display:none;" onchange="uploadSprites(${id},event)"></div>
       <div class="sprite-grid">${spriteHtml}</div>`;
     list.appendChild(div);
@@ -1005,7 +1052,7 @@ function addCompStatus(id){const c=App.companions.find(x=>x.id===id);if(c){if(!c
 function updCompStatus(id,idx,f,v){const c=App.companions.find(x=>x.id===id);if(c&&c.status[idx]){c.status[idx][f]=v;clearTimeout(window._sT);window._sT=setTimeout(save,500);}}
 function delCompStatus(id,idx){const c=App.companions.find(x=>x.id===id);if(c){c.status.splice(idx,1);save();renderCompanions();}}
 
-// ========== NPC ==========
+// NPC
 function renderNpcs(){
   const list=$("npcList");list.innerHTML="";
   if(!App.npcs.length){list.innerHTML='<div class="empty-state">暂无</div>';return;}
@@ -1025,24 +1072,87 @@ function addNpc(){App.npcs.push({id:uid(),name:"",role:"",desc:""});save();rende
 function updateNpc(id,f,v){const n=App.npcs.find(x=>x.id===id);if(n){n[f]=v;clearTimeout(window._nT);window._nT=setTimeout(save,500);}}
 function delNpc(id){if(confirm("移除？")){App.npcs=App.npcs.filter(n=>n.id!==id);save();renderNpcs();}}
 
-// ========== 法典 ==========
-function fillSelect(id,arr){
-  const el=$(id);if(!el)return;const old=el.value;el.innerHTML='<option value="">-- 不挂载 --</option>';
-  (arr||[]).forEach(p=>el.innerHTML+=`<option value="${esc(p.id)}">${esc(p.name)}</option>`);
-  if([...el.options].some(o=>o.value===old))el.value=old;
+// ====== 法典（全部可编辑）======
+function renderCodex(){
+  const wrap=$("codexCategories");if(!wrap)return;
+  wrap.innerHTML="";
+  CODEX_CATS.forEach(cat=>{
+    const arr=App.config.codex[cat.key]||[];
+    const enabled=arr.filter(x=>x.enabled).length;
+    const block=document.createElement('div');block.className='card';
+    block.innerHTML=`<div class="card-title">
+        <span><span class="icon">${cat.icon}</span> ${cat.label} <span class="badge" style="margin-left:6px;">${enabled}/${arr.length}</span></span>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-info" style="font-size:0.75rem;padding:5px 10px;" onclick="aiGenCodex('${cat.key}')">⚡ AI 生成</button>
+          <button class="btn btn-primary" style="font-size:0.75rem;padding:5px 10px;" onclick="addCodexItem('${cat.key}')">➕ 添加</button>
+        </div>
+      </div>
+      <div id="codex_${cat.key}"></div>`;
+    wrap.appendChild(block);
+    const list=block.querySelector('#codex_'+cat.key);
+    if(!arr.length){list.innerHTML='<div class="empty-state">暂无条目</div>';return;}
+    arr.forEach(item=>{
+      const div=document.createElement('div');div.className='codex-block';
+      div.innerHTML=`<div class="codex-block-title">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.9rem;">
+            <input type="checkbox" ${item.enabled?'checked':''} onchange="toggleCodex('${cat.key}',${item.id},this.checked)" style="accent-color:var(--accent);">
+            ${esc(item.name||"未命名")}
+          </label>
+          <button class="btn btn-danger" style="padding:3px 8px;font-size:0.7rem;" onclick="delCodexItem('${cat.key}',${item.id})">删</button>
+        </div>
+        <div class="form-group" style="margin-bottom:8px;">
+          <label class="form-label" style="font-size:0.78rem;">名称</label>
+          <input type="text" class="form-control" value="${esc(item.name||"")}" oninput="updCodexItem('${cat.key}',${item.id},'name',this.value)">
+        </div>
+        <div class="form-group" style="margin-bottom:8px;">
+          <label class="form-label" style="font-size:0.78rem;">关键词（逗号分隔）</label>
+          <input type="text" class="form-control" value="${esc(item.keywords||"")}" oninput="updCodexItem('${cat.key}',${item.id},'keywords',this.value)">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label" style="font-size:0.78rem;">详细内容（注入 AI）</label>
+          <textarea class="form-control" oninput="updCodexItem('${cat.key}',${item.id},'desc',this.value)">${esc(item.desc||"")}</textarea>
+        </div>`;
+      list.appendChild(div);
+    });
+  });
 }
-function renderPresetSelectors(){
-  const p=App.presets;
-  fillSelect("bindFandom",p.fandom);fillSelect("bindRelationship",p.relationship);
-  fillSelect("bindSetting",p.setting);fillSelect("bindOrientation",p.orientation);
-  fillSelect("bindStyle",p.style);fillSelect("bindPlot",p.plot);
-  const wb=$("bindWorldbook");
-  if((p.worldbook||[]).length){
-    wb.innerHTML=p.worldbook.map(i=>`<label><input type="checkbox" class="wb-cb" value="${esc(i.id)}"><div><b>${esc(i.name)}</b><br><span class="hint" style="margin:0;font-size:0.78rem;">${esc((i.desc||"").slice(0,50))}</span></div></label>`).join("");
-  }else wb.innerHTML='<div class="hint">未导入数据</div>';
+function addCodexItem(cat){
+  if(!App.config.codex[cat])App.config.codex[cat]=[];
+  App.config.codex[cat].push({id:uid(),name:"",keywords:"",desc:"",enabled:true});
+  save();renderCodex();
+}
+function updCodexItem(cat,id,f,v){
+  const it=App.config.codex[cat].find(x=>x.id===id);
+  if(it){it[f]=v;clearTimeout(window._cdT);window._cdT=setTimeout(()=>{save();renderCodex();},500);}
+}
+function toggleCodex(cat,id,b){
+  const it=App.config.codex[cat].find(x=>x.id===id);
+  if(it){it.enabled=b;save();renderCodex();}
+}
+function delCodexItem(cat,id){
+  if(!confirm("删除此条目？"))return;
+  App.config.codex[cat]=App.config.codex[cat].filter(x=>x.id!==id);
+  save();renderCodex();
+}
+async function aiGenCodex(cat){
+  if(!App.config.apiKey)return toast("先配置 API");
+  const catLabel=CODEX_CATS.find(c=>c.key===cat).label;
+  const topic=prompt(`输入主题，AI 将生成 3-5 个【${catLabel}】条目：`);
+  if(!topic)return;
+  toast("◈ 生成中...");
+  const sys=`你是【${catLabel}】设定生成器。基于主题生成 3-5 个条目，严格 JSON 数组：
+[{"name":"名称(限15字)","keywords":"关键词,关键词","desc":"详细设定(80-150字)"}]
+仅 JSON。`;
+  try{
+    const reply=await callAI([{role:"system",content:sys},{role:"user",content:topic}],false);
+    const m=reply.match(/\[[\s\S]+\]/);if(!m)throw new Error("格式异常");
+    const arr=JSON.parse(m[0]);
+    arr.forEach(w=>App.config.codex[cat].push({id:uid(),name:w.name||"",keywords:w.keywords||"",desc:w.desc||"",enabled:true}));
+    save();renderCodex();toast(`◈ 生成 ${arr.length} 条`,'ok');
+  }catch(e){toast("失败："+e.message,'err');}
 }
 
-// ========== 记忆 ==========
+// 记忆
 function renderMem(){
   const list=$("memList");
   const search=$("memSearch").value.toLowerCase().trim();const filter=$("memFilter").value;
@@ -1063,7 +1173,7 @@ function renderMem(){
     const [cls,tag]=tagMap[m.level]||tagMap.mid;
     const time=m.id?new Date(m.id<10000000000?m.id*1000:m.id).toLocaleString():'';
     list.innerHTML+=`<div class="memory-item ${cls}">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
         <div style="display:flex;gap:8px;align-items:center;"><span class="memory-tag">${tag}</span>${m.tag?`<span style="font-size:0.75rem;color:var(--text-muted);">#${esc(m.tag)}</span>`:''}</div>
         <div><button class="btn btn-ghost" style="padding:4px 10px;font-size:0.75rem;" onclick="cycleLevel(${m.id})">⇅</button>
         <button class="btn btn-ghost" style="padding:4px 10px;font-size:0.75rem;" onclick="editMem(${m.id})">编</button>
@@ -1075,22 +1185,20 @@ function addMem(){const t=$("memText").value.trim();if(!t)return toast("空");
   App.memories.unshift({id:uid(),text:t,level:$("memLevel").value,tag:$("memTag").value.trim()});
   $("memText").value="";$("memTag").value="";save();renderMem();toast("◈ 已收入",'ok');}
 function delMem(id){if(confirm("删？")){App.memories=App.memories.filter(m=>m.id!==id);save();renderMem();}}
-function editMem(id){const m=App.memories.find(x=>x.id===id);if(!m)return;
-  const n=prompt("修改：",m.text);if(n!==null){m.text=n;save();renderMem();}}
-function cycleLevel(id){const m=App.memories.find(x=>x.id===id);if(!m)return;
-  const o=['low','mid','high','pin'];m.level=o[(o.indexOf(m.level)+1)%4];save();renderMem();}
+function editMem(id){const m=App.memories.find(x=>x.id===id);if(!m)return;const n=prompt("修改：",m.text);if(n!==null){m.text=n;save();renderMem();}}
+function cycleLevel(id){const m=App.memories.find(x=>x.id===id);if(!m)return;const o=['low','mid','high','pin'];m.level=o[(o.indexOf(m.level)+1)%4];save();renderMem();}
 function clearAllMem(){if(confirm("清空？")){App.memories=[];save();renderMem();}}
 async function autoSummarize(){
   if(App.gameHistory.length<4)return toast("剧情少");
   toast("◈ 编织中...");
   const t=App.gameHistory.slice(-16).map(m=>(m.role==='user'?"玩家":"叙述")+"："+m.content).join("\n");
-  try{const sum=await callAI([{role:"user",content:`将剧情提炼为客观备忘录(200字内,只写事实):\n\n${t}`}],false);
+  try{const sum=await callAI([{role:"user",content:`提炼客观备忘录(200字内,只写事实):\n\n${t}`}],false);
     App.memories.unshift({id:uid(),text:"【自动归档】"+sum.trim(),level:"mid",tag:"自动"});
     save();renderMem();toast("◈ 已归档",'ok');
   }catch(e){toast("失败："+e.message,'err');}
 }
 
-// ========== 地图 ==========
+// ====== 地图（修复版）======
 function addNode(p){
   const opts=p||{name:$("locName").value.trim(),type:$("locType").value,desc:$("locDesc").value.trim(),
     x:parseFloat($("locX").value),y:parseFloat($("locY").value)};
@@ -1104,14 +1212,18 @@ function addNode(p){
   save();renderMap();toast("◈ 已标注",'ok');
 }
 function applyMapTransform(){
-  $("mapBoard").style.transform=`translate(-50%,-50%) scale(${mapZoomLevel}) translate(${mapPanX/mapZoomLevel}px,${mapPanY/mapZoomLevel}px)`;
-  $("mapZoomLabel").textContent=`缩放 ${(mapZoomLevel*100).toFixed(0)}%`;
-  $("mapCoord").textContent=`缩放 ${(mapZoomLevel*100).toFixed(0)}% · 偏移 ${mapPanX.toFixed(0)},${mapPanY.toFixed(0)}`;
+  const b=$("mapBoard");if(!b)return;
+  b.style.transform=`translate(calc(-50% + ${mapPanX}px),calc(-50% + ${mapPanY}px)) scale(${mapZoomLevel})`;
+  if($("mapZoomLabel"))$("mapZoomLabel").textContent=`缩放 ${(mapZoomLevel*100).toFixed(0)}%`;
+  if($("mapCoord"))$("mapCoord").textContent=`缩放 ${(mapZoomLevel*100).toFixed(0)}% · 偏移 ${mapPanX.toFixed(0)},${mapPanY.toFixed(0)}`;
 }
 function mapZoom(d){mapZoomLevel=Math.max(0.3,Math.min(3,mapZoomLevel+d));applyMapTransform();}
 function mapResetView(){mapZoomLevel=1;mapPanX=0;mapPanY=0;applyMapTransform();}
 function drawLines(){
-  const svg=$("mapLines");while(svg.firstChild)svg.firstChild.remove();
+  const svg=$("mapLines");if(!svg)return;
+  while(svg.firstChild)svg.firstChild.remove();
+  svg.setAttribute('viewBox','0 0 1200 800');
+  svg.setAttribute('preserveAspectRatio','none');
   for(let i=0;i<App.mapNodes.length;i++){
     for(let j=i+1;j<App.mapNodes.length;j++){
       const a=App.mapNodes[i],b=App.mapNodes[j];
@@ -1120,54 +1232,75 @@ function drawLines(){
       if(d<th){
         const ln=document.createElementNS('http://www.w3.org/2000/svg','line');
         ln.setAttribute('x1',a.x);ln.setAttribute('y1',a.y);ln.setAttribute('x2',b.x);ln.setAttribute('y2',b.y);
-        ln.setAttribute('stroke','rgba(167,139,250,0.25)');ln.setAttribute('stroke-width','1.5');
+        ln.setAttribute('stroke','rgba(167,139,250,0.25)');ln.setAttribute('stroke-width','2');
         ln.setAttribute('stroke-dasharray','4,4');svg.appendChild(ln);
       }
     }
   }
 }
 function renderMap(){
-  const board=$("mapBoard");board.querySelectorAll('.map-node').forEach(n=>n.remove());drawLines();
+  const board=$("mapBoard");if(!board)return;
+  board.querySelectorAll('.map-node').forEach(n=>n.remove());
+  drawLines();
   App.mapNodes.forEach(node=>{
     const el=document.createElement('div');el.className='map-node';
     el.style.left=node.x+'px';el.style.top=node.y+'px';
     if(node.locked)el.dataset.locked="true";
     el.innerHTML=`<div class="node-icon" data-type="${node.type}"></div><div class="node-label">${esc(node.name)}</div>`;
-    let dragging=false,sx,sy;
-    const start=e=>{
-      if(node.locked){e.stopPropagation();return;}
-      e.stopPropagation();dragging=true;el.style.zIndex=50;
-      const t=e.touches?e.touches[0]:e;sx=t.clientX;sy=t.clientY;
+    
+    let dragging=false,moved=false,sx,sy,nodeStartX,nodeStartY;
+    const start=(e)=>{
+      e.stopPropagation();e.preventDefault();
+      if(node.locked){
+        const t=e.touches?e.touches[0]:e;sx=t.clientX;sy=t.clientY;
+        const onUp=(ee)=>{
+          const tt=ee.changedTouches?ee.changedTouches[0]:ee;
+          if(Math.abs(tt.clientX-sx)<5&&Math.abs(tt.clientY-sy)<5)openPopup(node);
+          document.removeEventListener('mouseup',onUp);document.removeEventListener('touchend',onUp);
+        };
+        document.addEventListener('mouseup',onUp);document.addEventListener('touchend',onUp);
+        return;
+      }
+      dragging=true;moved=false;el.style.zIndex=50;
+      const t=e.touches?e.touches[0]:e;
+      sx=t.clientX;sy=t.clientY;nodeStartX=node.x;nodeStartY=node.y;
     };
-    const move=e=>{
+    const move=(e)=>{
       if(!dragging)return;
-      const t=e.touches?e.touches[0]:e;if(e.touches)e.preventDefault();
-      const r=$("mapBoardWrap").getBoundingClientRect();
-      const cx=(t.clientX-r.left-r.width/2-mapPanX)/mapZoomLevel+600;
-      const cy=(t.clientY-r.top-r.height/2-mapPanY)/mapZoomLevel+400;
-      node.x=Math.max(0,Math.min(1200,cx));node.y=Math.max(0,Math.min(800,cy));
+      const t=e.touches?e.touches[0]:e;
+      if(e.touches)e.preventDefault();
+      const dx=(t.clientX-sx)/mapZoomLevel;
+      const dy=(t.clientY-sy)/mapZoomLevel;
+      if(Math.abs(t.clientX-sx)>3||Math.abs(t.clientY-sy)>3)moved=true;
+      node.x=Math.max(0,Math.min(1200,nodeStartX+dx));
+      node.y=Math.max(0,Math.min(800,nodeStartY+dy));
       el.style.left=node.x+'px';el.style.top=node.y+'px';
       drawLines();if(currentPopupId===node.id)closePopup();
     };
-    const end=e=>{
-      if(!dragging&&!node.locked)return;
-      const wasD=dragging;dragging=false;el.style.zIndex=10;
-      if(wasD)save();
-      const t=e.changedTouches?e.changedTouches[0]:e;
-      if(node.locked||(Math.abs(t.clientX-sx)<5&&Math.abs(t.clientY-sy)<5))openPopup(node);
+    const end=(e)=>{
+      if(!dragging)return;
+      dragging=false;el.style.zIndex=10;
+      if(moved)save();
+      else openPopup(node);
     };
     el.addEventListener('mousedown',start);
-    document.addEventListener('mousemove',move);
-    document.addEventListener('mouseup',end);
     el.addEventListener('touchstart',start,{passive:false});
+    document.addEventListener('mousemove',move);
     document.addEventListener('touchmove',move,{passive:false});
+    document.addEventListener('mouseup',end);
     document.addEventListener('touchend',end);
-    el.addEventListener('click',e=>{if(node.locked){e.stopPropagation();openPopup(node);}});
-    el.ondblclick=e=>{e.stopPropagation();
-      if(confirm(`删 [${node.name}]？`)){
-        App.mapNodes=App.mapNodes.filter(n=>n.id!==node.id);
-        if(currentPopupId===node.id)closePopup();save();renderMap();
-      }};
+    let lastTap=0;
+    el.addEventListener('click',e=>{
+      e.stopPropagation();
+      const now=Date.now();
+      if(now-lastTap<350){
+        if(confirm(`删 [${node.name}]？`)){
+          App.mapNodes=App.mapNodes.filter(n=>n.id!==node.id);
+          if(currentPopupId===node.id)closePopup();save();renderMap();
+        }
+      }
+      lastTap=now;
+    });
     board.appendChild(el);
   });
 }
@@ -1176,18 +1309,19 @@ function openPopup(node){
   $("popupTitle").innerText=node.name;
   $("popupCoord").innerText=`X:${node.x.toFixed(0)} · Y:${node.y.toFixed(0)} · ${node.type} ${node.locked?'· 🔒':''}`;
   $("popupDesc").innerText=node.desc||"（无）";
-  $("lockBtn").innerText=node.locked?"🔓 解锁":"🔒 锁定";
+  $("lockBtn").innerText=node.locked?"🔓":"🔒";
   const p=$("nodePopup");p.style.display="block";
   p.style.left=node.x+'px';p.style.top=`calc(${node.y}px - 12px)`;
 }
 function closePopup(){$("nodePopup").style.display="none";currentPopupId=null;}
 function toggleNodeLock(){const n=App.mapNodes.find(x=>x.id===currentPopupId);if(!n)return;
-  n.locked=!n.locked;save();renderMap();openPopup(n);toast(n.locked?"已锁":"已解锁",'ok');}
+  n.locked=!n.locked;save();renderMap();openPopup(n);toast(n.locked?"锁":"解",'ok');}
 function teleportToNode(){
   const n=App.mapNodes.find(x=>x.id===currentPopupId);if(!n)return;
   App.currentLoc=n.name;save();$("gameLoc").innerText=n.name;closePopup();
   document.querySelector('[data-tab="game"]').click();
-  $("actionInput").value=`【系统降临】我移动至 [${n.name}]。地点：${n.desc||"无"}\n请描述抵达后的所见所闻并给出选项。`;submitAction();
+  $("actionInput").value=`【系统降临】我移动至 [${n.name}]。地点：${n.desc||"无"}\n请描述抵达后的所见所闻并给出选项。`;
+  addUserMsg();triggerAI();
 }
 function editNodeDesc(){
   const n=App.mapNodes.find(x=>x.id===currentPopupId);if(!n)return;
@@ -1215,27 +1349,38 @@ async function aiGenMap(){
     const m=r.match(/\[[\s\S]+\]/);if(!m)throw new Error("格式异常");
     const arr=JSON.parse(m[0]);
     arr.forEach(n=>addNode({name:n.name||"未命名",type:n.type||"loc",x:parseFloat(n.x)||600,y:parseFloat(n.y)||400,desc:n.desc||""}));
-    $("aiMapPrompt").value="";toast(`◈ ${arr.length} 节点已生成`,'ok');
+    $("aiMapPrompt").value="";toast(`◈ ${arr.length} 节点`,'ok');
   }catch(e){toast("失败："+e.message,'err');}
 }
 let isPanning=false,panStartX,panStartY,panStartXOff,panStartYOff;
 function setupMapPanZoom(){
   const wrap=$("mapBoardWrap");if(!wrap||wrap._inited)return;wrap._inited=true;
   wrap.addEventListener('wheel',e=>{e.preventDefault();mapZoom(e.deltaY<0?0.1:-0.1);},{passive:false});
-  wrap.addEventListener('mousedown',e=>{
+  const panStart=e=>{
     if(e.target!==wrap&&e.target!==$("mapBoard")&&e.target!==$("mapLines"))return;
-    isPanning=true;panStartX=e.clientX;panStartY=e.clientY;
-    panStartXOff=mapPanX;panStartYOff=mapPanY;wrap.style.cursor='grabbing';
-  });
-  document.addEventListener('mousemove',e=>{
+    isPanning=true;
+    const t=e.touches?e.touches[0]:e;
+    panStartX=t.clientX;panStartY=t.clientY;
+    panStartXOff=mapPanX;panStartYOff=mapPanY;
+    wrap.classList.add('panning');
+  };
+  const panMove=e=>{
     if(!isPanning)return;
-    mapPanX=panStartXOff+(e.clientX-panStartX);mapPanY=panStartYOff+(e.clientY-panStartY);
+    const t=e.touches?e.touches[0]:e;
+    if(e.touches)e.preventDefault();
+    mapPanX=panStartXOff+(t.clientX-panStartX);mapPanY=panStartYOff+(t.clientY-panStartY);
     applyMapTransform();
-  });
-  document.addEventListener('mouseup',()=>{if(isPanning){isPanning=false;wrap.style.cursor='';}});
+  };
+  const panEnd=()=>{if(isPanning){isPanning=false;wrap.classList.remove('panning');}};
+  wrap.addEventListener('mousedown',panStart);
+  wrap.addEventListener('touchstart',panStart,{passive:false});
+  document.addEventListener('mousemove',panMove);
+  document.addEventListener('touchmove',panMove,{passive:false});
+  document.addEventListener('mouseup',panEnd);
+  document.addEventListener('touchend',panEnd);
 }
 
-// ========== 存档 ==========
+// 存档
 function renderSaves(){
   const list=$("saveList");list.innerHTML="";
   const keys=Object.keys(App.saves).sort((a,b)=>App.saves[b].time-App.saves[a].time);
@@ -1244,7 +1389,7 @@ function renderSaves(){
     const s=App.saves[k];
     list.innerHTML+=`<div class="save-slot">
       <div class="save-slot-title">⚜ ${esc(s.name)}</div>
-      <div class="save-slot-meta">${new Date(s.time).toLocaleString()} · ${s.history.length} 段对话 · ${esc(s.loc||"未知")}</div>
+      <div class="save-slot-meta">${new Date(s.time).toLocaleString()} · ${s.history.length} 段 · ${esc(s.loc||"未知")}</div>
       <div class="flex-row">
         <button class="btn btn-primary" onclick="loadSave('${k}')">载入</button>
         <button class="btn btn-gold" onclick="overwriteSave('${k}')">覆盖</button>
@@ -1257,10 +1402,10 @@ function createSave(){
   App.saves["sv_"+uid()]={name,time:Date.now(),history:JSON.parse(JSON.stringify(App.gameHistory)),loc:App.currentLoc};
   $("newSaveName").value="";save();renderSaves();toast("◈ 已镌刻",'ok');
 }
-function loadSave(id){if(!confirm("覆盖当前进度？"))return;
+function loadSave(id){if(!confirm("覆盖当前？"))return;
   const s=App.saves[id];if(!s)return;
   App.gameHistory=JSON.parse(JSON.stringify(s.history));App.currentLoc=s.loc||"";
-  $("gameLoc").innerText=App.currentLoc||"未知之境";save();renderHistory();
+  $("gameLoc").innerText=App.currentLoc||"未知";save();renderHistory();
   document.querySelector('[data-tab="game"]').click();toast("◈ 已载入",'ok');}
 function overwriteSave(id){if(!confirm("覆盖？"))return;
   App.saves[id].time=Date.now();App.saves[id].history=JSON.parse(JSON.stringify(App.gameHistory));
@@ -1268,7 +1413,7 @@ function overwriteSave(id){if(!confirm("覆盖？"))return;
 function renameSave(id){const n=prompt("新名",App.saves[id].name);if(n){App.saves[id].name=n;save();renderSaves();}}
 function delSave(id){if(confirm("删？")){delete App.saves[id];save();renderSaves();}}
 
-// ========== 剧本 ==========
+// 剧本
 function renderScripts(){
   const list=$("scriptList");list.innerHTML="";
   if(!App.scripts.length){list.innerHTML='<div class="empty-state">尚无剧本</div>';return;}
@@ -1276,7 +1421,7 @@ function renderScripts(){
     const div=document.createElement('div');div.className="script-card"+(currentScriptId===s.id?" active":"");
     div.onclick=()=>{currentScriptId=s.id;renderScripts();renderScriptEditor();};
     div.innerHTML=`<div class="script-title">${esc(s.title||"未命名")}</div>
-      <div class="script-summary">${esc(s.summary||"（暂无简介）")}</div>
+      <div class="script-summary">${esc(s.summary||"")}</div>
       <div class="script-meta">${esc(s.theme||"自定义")} · ${new Date(s.time||Date.now()).toLocaleDateString()}</div>`;
     list.appendChild(div);
   });
@@ -1286,39 +1431,60 @@ function renderScriptEditor(){
   if(!currentScriptId){ed.innerHTML='<div class="empty-state">选择或新建</div>';$("scriptEditStatus").textContent="未选择";return;}
   const s=App.scripts.find(x=>x.id===currentScriptId);if(!s){ed.innerHTML='<div class="empty-state">不存在</div>';return;}
   $("scriptEditStatus").textContent="编辑中";
-  ed.innerHTML=`<div class="form-group"><label class="form-label">主题标签</label><input type="text" class="form-control" value="${esc(s.theme||"")}" oninput="updateScript('theme',this.value)"></div>
+  const sStr=(s.suggestedStatus||[]).map(x=>`${x.key}=${x.value}`).join("\n");
+  ed.innerHTML=`<div class="form-group"><label class="form-label">主题</label><input type="text" class="form-control" value="${esc(s.theme||"")}" oninput="updateScript('theme',this.value)"></div>
     <div class="form-group"><label class="form-label">标题</label><input type="text" class="form-control" value="${esc(s.title||"")}" oninput="updateScript('title',this.value)"></div>
     <div class="form-group"><label class="form-label">简介</label><textarea class="form-control" oninput="updateScript('summary',this.value)">${esc(s.summary||"")}</textarea></div>
-    <div class="form-group"><label class="form-label">用户偏好（剧本主线锚点）</label><textarea class="form-control" oninput="updateScript('userPref',this.value)">${esc(s.userPref||"")}</textarea></div>
-    <div class="form-group"><label class="form-label">开端/引子</label><textarea class="form-control" style="min-height:100px;" oninput="updateScript('opening',this.value)">${esc(s.opening||"")}</textarea></div>
+    <div class="form-group"><label class="form-label">用户偏好</label><textarea class="form-control" oninput="updateScript('userPref',this.value)">${esc(s.userPref||"")}</textarea></div>
+    <div class="form-group"><label class="form-label">开端</label><textarea class="form-control" style="min-height:100px;" oninput="updateScript('opening',this.value)">${esc(s.opening||"")}</textarea></div>
     <div class="form-group"><label class="form-label">章节大纲</label><textarea class="form-control" style="min-height:160px;" oninput="updateScript('outline',this.value)">${esc(s.outline||"")}</textarea></div>
     <div class="form-group"><label class="form-label">关键事件</label><textarea class="form-control" oninput="updateScript('keyEvents',this.value)">${esc(s.keyEvents||"")}</textarea></div>
     <div class="form-group"><label class="form-label">结局</label><textarea class="form-control" oninput="updateScript('ending',this.value)">${esc(s.ending||"")}</textarea></div>
-    <div class="flex-row" style="margin-top:16px;">
-      <button class="btn btn-gold" onclick="bindScriptToGame()">⚜ 绑定游玩</button>
+    <div class="form-group"><label class="form-label">建议状态字段</label>
+      <textarea class="form-control" oninput="updateScriptStatus(this.value)" placeholder="HP=100/100">${esc(sStr)}</textarea></div>
+    <div class="flex-row">
+      <button class="btn btn-gold" onclick="bindScriptToGame()">⚜ 绑定</button>
       <button class="btn btn-info" onclick="exportScript()">导出</button>
-      <button class="btn btn-info" onclick="regenScript()">🔄 AI 重新生成</button>
-      <button class="btn btn-danger" onclick="delScript()">删除</button></div>`;
+      <button class="btn btn-info" onclick="regenScript()">🔄 重生</button>
+      <button class="btn btn-danger" onclick="delScript()">删</button></div>`;
 }
 function createScript(){
-  const s={id:uid(),title:"新剧本",theme:"自定义",summary:"",userPref:"",opening:"",outline:"",keyEvents:"",ending:"",time:Date.now()};
-  App.scripts.unshift(s);currentScriptId=s.id;save();renderScripts();renderScriptEditor();toast("◈ 已新建",'ok');
+  const s={id:uid(),title:"新剧本",theme:"自定义",summary:"",userPref:"",opening:"",outline:"",keyEvents:"",ending:"",suggestedStatus:[],time:Date.now()};
+  App.scripts.unshift(s);currentScriptId=s.id;save();renderScripts();renderScriptEditor();
 }
 function updateScript(f,v){const s=App.scripts.find(x=>x.id===currentScriptId);if(s){s[f]=v;clearTimeout(window._spT);window._spT=setTimeout(save,500);}if(f==='title'||f==='summary'||f==='theme')renderScripts();}
+function updateScriptStatus(v){
+  const s=App.scripts.find(x=>x.id===currentScriptId);if(!s)return;
+  const arr=[];
+  v.split('\n').forEach(line=>{const idx=line.indexOf('=');if(idx>0){const k=line.slice(0,idx).trim(),val=line.slice(idx+1).trim();if(k)arr.push({key:k,value:val});}});
+  s.suggestedStatus=arr;clearTimeout(window._spT);window._spT=setTimeout(save,500);
+}
 function delScript(){if(!confirm("删？"))return;App.scripts=App.scripts.filter(s=>s.id!==currentScriptId);currentScriptId=null;save();renderScripts();renderScriptEditor();}
-function bindScriptToGame(){const s=App.scripts.find(x=>x.id===currentScriptId);if(!s)return;App.config.boundScript=s.id;save();toast("◈ 已绑定",'ok');}
+function bindScriptToGame(){
+  const s=App.scripts.find(x=>x.id===currentScriptId);if(!s)return;
+  App.config.boundScript=s.id;
+  if(Array.isArray(s.suggestedStatus)&&s.suggestedStatus.length){
+    if(confirm(`应用建议状态：\n${s.suggestedStatus.map(x=>x.key+'='+x.value).join('\n')}`)){
+      if(!App.config.user.status)App.config.user.status=[];
+      s.suggestedStatus.forEach(ns=>{
+        const ex=App.config.user.status.find(x=>x.key===ns.key);
+        if(ex)ex.value=ns.value;else App.config.user.status.push({key:ns.key,value:ns.value});
+      });
+      renderUserStatus();
+    }
+  }
+  save();toast("◈ 已绑定",'ok');
+}
 function exportScript(){const s=App.scripts.find(x=>x.id===currentScriptId);if(!s)return;
   const blob=new Blob([JSON.stringify(s,null,2)],{type:"application/json"});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`剧本_${s.title}.json`;a.click();}
 async function importScriptDoc(e){
   const f=e.target.files[0];if(!f)return;
   try{const t=await readDocFile(f);
-    const s={id:uid(),title:f.name.replace(/\.[^.]+$/,""),theme:"导入",summary:"",userPref:"",opening:t,outline:"",keyEvents:"",ending:"",time:Date.now()};
-    App.scripts.unshift(s);currentScriptId=s.id;save();renderScripts();renderScriptEditor();toast("◈ 已导入",'ok');
+    const s={id:uid(),title:f.name.replace(/\.[^.]+$/,""),theme:"导入",summary:"",userPref:"",opening:t,outline:"",keyEvents:"",ending:"",suggestedStatus:[],time:Date.now()};
+    App.scripts.unshift(s);currentScriptId=s.id;save();renderScripts();renderScriptEditor();
   }catch(err){alert("失败："+err.message);}e.target.value="";
 }
-
-// 剧本主题选择
 function openThemePicker(){renderThemes();$("themeModal").classList.add('show');}
 function renderThemes(){
   const grid=$("themeGrid");grid.innerHTML="";
@@ -1338,192 +1504,182 @@ function openPrefDialog(theme){
 }
 async function generateScriptFromTheme(){
   const theme=pendingTheme;if(!theme)return;
-  const userRole=$("prefUserRole").value.trim();
-  const npcRole=$("prefNpcRole").value.trim();
-  const direction=$("prefDirection").value.trim();
-  const length=$("prefLength").value.trim();
+  const userRole=$("prefUserRole").value.trim(),npcRole=$("prefNpcRole").value.trim();
+  const direction=$("prefDirection").value.trim(),length=$("prefLength").value.trim();
   if(!App.config.apiKey){alert("先配置 API");return;}
-  closeModal('prefModal');toast("◈ AI 创作中...");
-  const sys=`你是顶级剧本设计师。基于"主题标签"和"用户偏好"创作一份完整可玩的剧本大纲，严格 JSON：
-{
-"title":"有意境的剧本标题(限15字)",
-"summary":"一句话剧本简介",
-"opening":"开端引子(200-300字 描绘故事开始的场景与悬念)",
-"outline":"章节大纲(每行一章 包含章标题与剧情概述 共 5-8 章)",
-"keyEvents":"3-5 个关键事件转折点 每个独立一行",
-"ending":"结局走向描述"
-}
-仅输出 JSON。中文。剧情符合主题标签的典型套路。`;
-  const usr=`【主题标签】${theme}
-【用户视角】${userRole||"未指定"}
-【陪同者身份】${npcRole||"未指定"}
-【偏好走向】${direction||"未指定"}
-【篇幅】${length||"未指定"}
-
-请基于以上设定，创作贴合"${theme}"主题的剧本大纲。如果用户视角未明确，根据主题套路智能选择最合适的设定（例如骨科pa默认妹妹视角）。`;
+  closeModal('prefModal');toast("◈ 创作中...");
+  const sys=`剧本设计师。基于主题与偏好创作剧本，严格 JSON：
+{"title":"","summary":"","opening":"(200-300字)","outline":"(每行一章 5-8 章)","keyEvents":"3-5 个转折点","ending":"","suggestedStatus":[{"key":"","value":""}]}
+suggestedStatus 根据主题智能生成 2-5 个状态：
+- 霍格沃兹 → 魔力值/学院积分
+- 末世 → 生命值/体力/辐射值
+- 修仙 → 灵力/境界
+- 学生时代 → 学业/人气/好感度
+- 古风权谋 → 体力/声望/官职
+仅 JSON。`;
+  const usr=`【主题】${theme}\n【用户】${userRole}\n【陪同者】${npcRole}\n【偏好】${direction}\n【篇幅】${length}`;
   try{
     const reply=await callAI([{role:"system",content:sys},{role:"user",content:usr}],false);
     const m=reply.match(/\{[\s\S]+\}/);if(!m)throw new Error("格式异常");
     const obj=JSON.parse(m[0]);
     const s={id:uid(),theme,title:obj.title||theme,summary:obj.summary||"",
       userPref:`【主题】${theme}\n【用户】${userRole}\n【陪同者】${npcRole}\n【偏好】${direction}\n【篇幅】${length}`,
-      opening:obj.opening||"",outline:obj.outline||"",keyEvents:obj.keyEvents||"",ending:obj.ending||"",time:Date.now()};
+      opening:obj.opening||"",outline:obj.outline||"",keyEvents:obj.keyEvents||"",ending:obj.ending||"",
+      suggestedStatus:Array.isArray(obj.suggestedStatus)?obj.suggestedStatus:[],time:Date.now()};
     App.scripts.unshift(s);currentScriptId=s.id;save();renderScripts();renderScriptEditor();
-    document.querySelector('[data-tab="script"]').click();
-    toast("◈ 剧本生成完毕",'ok');
-  }catch(e){toast("失败："+e.message,'err');alert("失败："+e.message);}
+    document.querySelector('[data-tab="script"]').click();toast("◈ 完毕",'ok');
+  }catch(e){toast("失败："+e.message,'err');alert(e.message);}
 }
 async function regenScript(){
-  const s=App.scripts.find(x=>x.id===currentScriptId);if(!s)return;
-  if(!s.userPref)return toast("此剧本无偏好记录");
-  if(!confirm("AI 将根据原偏好重新生成剧本（标题/大纲将被覆盖）？"))return;
-  pendingTheme=s.theme;
-  toast("◈ 重新生成中...");
-  const sys=`你是顶级剧本设计师。请基于以下信息重新生成剧本，严格 JSON：
-{"title":"","summary":"","opening":"","outline":"","keyEvents":"","ending":""}
-仅 JSON。`;
-  try{
-    const reply=await callAI([{role:"system",content:sys},{role:"user",content:s.userPref}],false);
+  const s=App.scripts.find(x=>x.id===currentScriptId);if(!s||!s.userPref)return toast("无偏好");
+  if(!confirm("重生（覆盖）？"))return;
+  toast("◈ 生成...");
+  const sys=`剧本设计师。重生 JSON：{"title":"","summary":"","opening":"","outline":"","keyEvents":"","ending":"","suggestedStatus":[]}`;
+  try{const reply=await callAI([{role:"system",content:sys},{role:"user",content:s.userPref}],false);
     const m=reply.match(/\{[\s\S]+\}/);if(!m)throw new Error("格式异常");
     const obj=JSON.parse(m[0]);
-    Object.assign(s,{title:obj.title||s.title,summary:obj.summary||s.summary,opening:obj.opening||"",
-      outline:obj.outline||"",keyEvents:obj.keyEvents||"",ending:obj.ending||""});
-    save();renderScripts();renderScriptEditor();toast("◈ 已重新生成",'ok');
+    Object.assign(s,{title:obj.title||s.title,summary:obj.summary||s.summary,opening:obj.opening||"",outline:obj.outline||"",keyEvents:obj.keyEvents||"",ending:obj.ending||"",suggestedStatus:obj.suggestedStatus||s.suggestedStatus});
+    save();renderScripts();renderScriptEditor();toast("◈ 重生",'ok');
   }catch(e){toast("失败："+e.message,'err');}
 }
 
-// ========== 美化 ==========
+// 美化
 function applyCustomCSS(){const css=$("customCSS").value;$("customStyle").textContent=css;App.config.customCSS=css;save();toast("◈ 已应用",'ok');}
 function loadDefaultCSS(){
   $("customCSS").value=`/* 自定义样式区 - 取消注释可生效 */
 /*
-:root {
-  --accent: #ec4899 !important;
-  --gold: #fbbf24 !important;
-}
-.vn-textbox {
-  background: rgba(20,20,40,0.95) !important;
-}
-.vn-name {
-  color: #fbbf24 !important;
-}
+:root { --accent:#ec4899 !important; --gold:#fbbf24 !important; }
+.vn-textbox { background:rgba(20,20,40,0.95) !important; }
 */`;
 }
 function loadThemePreset(name){
   const themes={
-    warm:`:root{--bg-deep:#1a0f0a !important;--bg-card:#2d1810 !important;--bg-elevated:#3d2415 !important;--accent:#f97316 !important;--gold:#fbbf24 !important;--border-medium:rgba(249,115,22,0.4) !important;}
-.vn-textbox{border-color:rgba(249,115,22,0.5) !important;}
-.vn-name{color:#fbbf24 !important;background:linear-gradient(135deg,rgba(249,115,22,0.4),rgba(251,191,36,0.4)) !important;}`,
-    ice:`:root{--bg-deep:#0a1420 !important;--bg-card:#0f1e35 !important;--bg-elevated:#152a4a !important;--accent:#38bdf8 !important;--gold:#7dd3fc !important;--border-medium:rgba(56,189,248,0.4) !important;}
-.vn-textbox{border-color:rgba(56,189,248,0.5) !important;}
-.vn-name{color:#7dd3fc !important;background:linear-gradient(135deg,rgba(56,189,248,0.4),rgba(125,211,252,0.4)) !important;}`,
-    forest:`:root{--bg-deep:#0a1410 !important;--bg-card:#0f2418 !important;--bg-elevated:#16382a !important;--accent:#4ade80 !important;--gold:#a3e635 !important;--border-medium:rgba(74,222,128,0.4) !important;}
-.vn-textbox{border-color:rgba(74,222,128,0.5) !important;}
-.vn-name{color:#a3e635 !important;background:linear-gradient(135deg,rgba(74,222,128,0.4),rgba(163,230,53,0.4)) !important;}`
+    warm:`:root{--bg-deep:#1a0f0a !important;--bg-card:#2d1810 !important;--bg-elevated:#3d2415 !important;--accent:#f97316 !important;--gold:#fbbf24 !important;--border-medium:rgba(249,115,22,0.4) !important;}`,
+    ice:`:root{--bg-deep:#0a1420 !important;--bg-card:#0f1e35 !important;--bg-elevated:#152a4a !important;--accent:#38bdf8 !important;--gold:#7dd3fc !important;--border-medium:rgba(56,189,248,0.4) !important;}`,
+    forest:`:root{--bg-deep:#0a1410 !important;--bg-card:#0f2418 !important;--bg-elevated:#16382a !important;--accent:#4ade80 !important;--gold:#a3e635 !important;--border-medium:rgba(74,222,128,0.4) !important;}`
   };
   $("customCSS").value=themes[name]||"";applyCustomCSS();
 }
 
-// ========== 生图 ==========
+// 生图
+async function testImgApi(){
+  const status=$("imgApiStatus");status.textContent="测试...";status.className="badge";saveConfig();const c=App.config;
+  if(!c.imgBaseUrl){status.textContent="未配置";status.className="badge err";return alert("Base URL 未填");}
+  try{
+    if(c.imgProvider==='openai'){
+      const res=await fetch(`${c.imgBaseUrl}/models`,{headers:{Authorization:`Bearer ${c.imgApiKey}`}});
+      if(!res.ok){const t=await res.text();throw new Error(`HTTP ${res.status}: ${t.slice(0,120)}`);}
+      const d=await res.json();
+      status.textContent=`已连接(${(d.data||[]).length})`;status.className="badge ok";toast("◈ 通畅",'ok');
+    }else{
+      const res=await fetch(`${c.imgBaseUrl}/sdapi/v1/sd-models`);
+      if(!res.ok)throw new Error(`HTTP ${res.status}`);
+      const d=await res.json();
+      status.textContent=`已连接(${(d||[]).length})`;status.className="badge ok";toast("◈ 通畅",'ok');
+    }
+  }catch(e){status.textContent="失败";status.className="badge err";alert("失败："+e.message);}
+}
+async function fetchImgModels(){
+  saveConfig();const c=App.config;if(!c.imgBaseUrl)return toast("先填 Base URL");
+  try{
+    let ms=[];
+    if(c.imgProvider==='openai'){
+      const res=await fetch(`${c.imgBaseUrl}/models`,{headers:{Authorization:`Bearer ${c.imgApiKey}`}});
+      const d=await res.json();if(!res.ok)throw new Error(d?.error?.message||"失败");
+      ms=(d.data||[]).map(x=>x.id).filter(x=>/dall|image|sd|flux|stable|midjourney|imagen/i.test(x));
+      if(ms.length===0)ms=(d.data||[]).map(x=>x.id);
+    }else{
+      const res=await fetch(`${c.imgBaseUrl}/sdapi/v1/sd-models`);
+      const d=await res.json();
+      ms=(d||[]).map(x=>x.title||x.model_name);
+    }
+    ms.sort((a,b)=>a.localeCompare(b));
+    const sel=$("imgModelList");sel.style.display="block";
+    sel.innerHTML='<option value="">-- 选择 --</option>'+ms.map(m=>`<option>${esc(m)}</option>`).join("");
+    $("imgModelCount").textContent=ms.length+" 个";toast(`◈ ${ms.length} 个`,'ok');
+  }catch(e){toast("失败："+e.message,'err');}
+}
 function previewRef(e){
   const f=e.target.files[0];if(!f){imgRefData=null;$("imgRefPreview").innerHTML="";return;}
   const r=new FileReader();r.onload=()=>{imgRefData=r.result;
-    $("imgRefPreview").innerHTML=`<img src="${r.result}" style="max-height:160px;border-radius:3px;border:1px solid var(--border-soft);">`;
+    $("imgRefPreview").innerHTML=`<img src="${r.result}" style="max-height:160px;border-radius:3px;">`;
   };r.readAsDataURL(f);
 }
 async function aiEnhancePrompt(){
-  const cur=$("imgPrompt").value.trim();if(!cur)return toast("先输入想法");
+  const cur=$("imgPrompt").value.trim();if(!cur)return toast("先输入");
   if(!App.config.apiKey)return toast("配置文本 API");
   toast("◈ 优化中...");
   try{
     let msgs;
-    if(imgRefData){
-      msgs=[{role:"user",content:[
-        {type:"text",text:`基于参考图与现有提示词生成详细英文 SD/DALL-E prompt，仅输出 prompt：${cur}`},
-        {type:"image_url",image_url:{url:imgRefData}}]}];
-    }else{
-      msgs=[{role:"user",content:`将需求转为详细英文图像 prompt(画风/光照/构图/细节,仅输出 prompt)：${cur}`}];
-    }
-    const r=await callAI(msgs,false);
-    $("imgPrompt").value=r.trim();toast("◈ 已优化",'ok');
+    if(imgRefData){msgs=[{role:"user",content:[{type:"text",text:`基于参考图与提示词生成英文 prompt：${cur}`},{type:"image_url",image_url:{url:imgRefData}}]}];}
+    else{msgs=[{role:"user",content:`将需求转英文图像 prompt：${cur}`}];}
+    const r=await callAI(msgs,false);$("imgPrompt").value=r.trim();toast("◈ 已优化",'ok');
   }catch(e){toast("失败："+e.message,'err');}
 }
-
 async function blobToDataURL(blob){return new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result);r.readAsDataURL(blob);});}
-
 async function generateImage(){
-  const c=App.config;if(!c.imgBaseUrl)return toast("先配置生图 API");
+  const c=App.config;if(!c.imgBaseUrl)return toast("先配置");
   const prompt=$("imgPrompt").value.trim();if(!prompt)return toast("提示词为空");
   $("imgGenStatus").textContent="生成中...";$("imgGenStatus").className="badge";
   try{
-    let imgUrl;
-    if(c.imgProvider==='openai'){
-      // 修复版：不强制 response_format，自适配返回
-      const body={model:c.imgModel,prompt,n:1,size:c.imgSize};
-      if(c.imgQuality)body.quality=c.imgQuality;
-      const res=await fetch(`${c.imgBaseUrl}/images/generations`,{method:"POST",
-        headers:{"Content-Type":"application/json","Authorization":`Bearer ${c.imgApiKey}`},body:JSON.stringify(body)});
-      const d=await res.json();
-      if(!res.ok)throw new Error(d?.error?.message||JSON.stringify(d).slice(0,200));
-      const item=d.data[0];
-      if(item.b64_json){imgUrl="data:image/png;base64,"+item.b64_json;}
-      else if(item.url){
-        // 转 base64 持久存储
-        try{
-          const r=await fetch(item.url);const blob=await r.blob();
-          imgUrl=await blobToDataURL(blob);
-        }catch(e){imgUrl=item.url;}
-      }else{throw new Error("API 未返回 url 或 b64_json");}
-    }else{
-      // SD WebUI
-      const [w,h]=c.imgSize.split("x").map(Number);
-      const body={prompt,negative_prompt:$("imgNegative").value,width:w,height:h,steps:25,sampler_name:"DPM++ 2M Karras"};
-      const ep=imgRefData?'/sdapi/v1/img2img':'/sdapi/v1/txt2img';
-      if(imgRefData){body.init_images=[imgRefData.split(',')[1]];body.denoising_strength=0.7;}
-      const res=await fetch(c.imgBaseUrl+ep,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-      const d=await res.json();if(!res.ok)throw new Error(d.error||"失败");
-      if(!d.images||!d.images[0])throw new Error("未返回图像");
-      imgUrl="data:image/png;base64,"+d.images[0];
+    const imgUrl=await callImgAPI(prompt,$("imgNegative").value);
+    App.gallery.unshift({id:uid(),url:imgUrl,prompt:prompt.slice(0,100),time:Date.now()});save();renderGallery();
+    $("imgGenStatus").textContent="完成";$("imgGenStatus").className="badge ok";toast("◈ 已生成",'ok');
+  }catch(e){$("imgGenStatus").textContent="失败";$("imgGenStatus").className="badge err";alert("失败：\n"+e.message);}
+}
+async function callImgAPI(prompt,negative){
+  const c=App.config;
+  if(c.imgProvider==='openai'){
+    const body={model:c.imgModel||"dall-e-3",prompt,n:1,size:c.imgSize};
+    if(c.imgQuality)body.quality=c.imgQuality;
+    const res=await fetch(`${c.imgBaseUrl}/images/generations`,{method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":`Bearer ${c.imgApiKey}`},body:JSON.stringify(body)});
+    const d=await res.json();
+    if(!res.ok)throw new Error(d?.error?.message||JSON.stringify(d).slice(0,200));
+    const item=d.data[0];
+    if(item.b64_json)return "data:image/png;base64,"+item.b64_json;
+    if(item.url){
+      try{const r=await fetch(item.url);const blob=await r.blob();return await blobToDataURL(blob);}
+      catch(e){return item.url;}
     }
-    const item={id:uid(),url:imgUrl,prompt:prompt.slice(0,100),time:Date.now()};
-    App.gallery.unshift(item);save();renderGallery();
-    $("imgGenStatus").textContent="完成";$("imgGenStatus").className="badge ok";
-    toast("◈ 图像已生成",'ok');
-  }catch(e){
-    $("imgGenStatus").textContent="失败";$("imgGenStatus").className="badge err";
-    alert("生图失败：\n\n"+e.message+"\n\n常见原因：\n· Base URL 末尾不要带 /\n· 部分代理不支持 b64_json，已自动改用 URL 模式\n· DALL-E-3 仅支持 1024x1024/1792x1024/1024x1792");
+    throw new Error("未返回图像");
+  }else{
+    const [w,h]=(c.imgSize||"512x512").split("x").map(Number);
+    const body={prompt,negative_prompt:negative||"",width:w,height:h,steps:25,sampler_name:"DPM++ 2M Karras"};
+    const ep=imgRefData?'/sdapi/v1/img2img':'/sdapi/v1/txt2img';
+    if(imgRefData){body.init_images=[imgRefData.split(',')[1]];body.denoising_strength=0.7;}
+    const res=await fetch(c.imgBaseUrl+ep,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const d=await res.json();if(!res.ok)throw new Error(d.error||"失败");
+    if(!d.images||!d.images[0])throw new Error("未返回");
+    return "data:image/png;base64,"+d.images[0];
   }
 }
-
 async function uploadLocalImages(e){
   const fs=Array.from(e.target.files);if(!fs.length)return;
-  for(const f of fs){
-    const data=await fileToDataURL(f);const compressed=await compressImage(data,1200);
-    App.gallery.unshift({id:uid(),url:compressed,prompt:f.name,time:Date.now()});
-  }
+  for(const f of fs){const data=await fileToDataURL(f);const c=await compressImage(data,1200);
+    App.gallery.unshift({id:uid(),url:c,prompt:f.name,time:Date.now()});}
   save();renderGallery();toast("◈ 已上传",'ok');e.target.value="";
 }
 function renderGallery(){
   const grid=$("galleryGrid");if(!grid)return;
   $("galleryCount").textContent=App.gallery.length+" 张";grid.innerHTML="";
-  if(!App.gallery.length){grid.innerHTML='<div class="empty-state">图库为空</div>';return;}
+  if(!App.gallery.length){grid.innerHTML='<div class="empty-state">空</div>';return;}
   App.gallery.forEach(g=>{
     const div=document.createElement('div');div.className='gallery-item';
     div.innerHTML=`<img src="${g.url}"><div class="gallery-meta"><span>${esc((g.prompt||"").slice(0,15))}</span><span style="color:var(--danger);cursor:pointer;" onclick="event.stopPropagation();delGalleryItem(${g.id});">×</span></div>`;
-    div.onclick=()=>useGalleryItem(g);
-    grid.appendChild(div);
+    div.onclick=()=>useGalleryItem(g);grid.appendChild(div);
   });
 }
-function delGalleryItem(id){if(confirm("删除？")){App.gallery=App.gallery.filter(g=>g.id!==id);save();renderGallery();}}
+function delGalleryItem(id){if(confirm("删？")){App.gallery=App.gallery.filter(g=>g.id!==id);save();renderGallery();}}
 function clearGallery(){if(confirm("清空？")){App.gallery=[];save();renderGallery();}}
 function useGalleryItem(g){
-  const c=prompt("用途：1=VN背景  2=添加为主角立绘  3=查看","1");
-  if(c==="1"){App.config.vnCurrentBg=g.url;save();toast("◈ 已设为背景",'ok');if($("vnStage").classList.contains('active'))updateVNBg();}
-  else if(c==="2"){App.config.user.sprites.push({id:uid(),emotion:"normal",dataUrl:g.url,name:"图库立绘"});save();renderUserSprites();toast("◈ 已添加",'ok');}
+  const c=prompt("用途：1=VN背景  2=主角立绘  3=查看","1");
+  if(c==="1"){App.config.vnCurrentBg=g.url;save();toast("◈ 已设",'ok');if($("vnStage").classList.contains('active'))updateVNBg();}
+  else if(c==="2"){App.config.user.sprites.push({id:uid(),emotion:"normal",dataUrl:g.url,name:"图库"});save();renderUserSprites();toast("◈ 已添加",'ok');}
   else{window.open(g.url,'_blank');}
 }
 
-// ========== AI 调用 ==========
+// AI 调用
 async function callAI(messages,stream=false,onDelta=null){
   const c=App.config;if(!c.apiKey)throw new Error("未配置 API Key");
   if(c.provider==='openai'){
@@ -1567,58 +1723,51 @@ async function callAI(messages,stream=false,onDelta=null){
   }
 }
 
-// ========== Prompt 构建 ==========
+// Prompt
 function buildSystemPrompt(){
   const c=App.config;
-  const find=(cat,id)=>(App.presets[cat]||[]).find(x=>x.id===id);
-  const presets=[];const add=p=>{if(p)presets.push(`【${p.name}】\n${p.desc}`);};
-  add(find("fandom",c.bindFandom));add(find("relationship",c.bindRelationship));
-  add(find("setting",c.bindSetting));add(find("orientation",c.bindOrientation));
-  add(find("style",c.bindStyle));add(find("plot",c.bindPlot));
-  c.bindWorldbook.forEach(id=>add(find("worldbook",id)));
-  
+  const presets=[];
+  CODEX_CATS.forEach(cat=>{
+    (c.codex[cat.key]||[]).filter(x=>x.enabled).forEach(it=>{
+      presets.push(`【${cat.label}·${it.name||"词条"}】${it.keywords?'(关键词:'+it.keywords+')':''}\n${it.desc||""}`);
+    });
+  });
   const u=c.user||{};
   const userStatus=(u.status||[]).filter(s=>s.key).map(s=>`${s.key}:${s.value}`).join(" | ")||"无";
   const userBlock=`姓名：${u.name||"未命名"}｜性别：${u.gender||"—"}｜年龄：${u.age||"—"}｜身份：${u.role||"—"}
 性格：${u.personality||"—"}
 外貌：${u.appearance||"—"}
 背景：${u.background||"—"}
-状态：${userStatus}`;
+当前状态：${userStatus}`;
   const compBlock=App.companions.length?App.companions.map((cm,i)=>{
-    const cmStatus=(cm.status||[]).filter(s=>s.key).map(s=>`${s.key}:${s.value}`).join(" | ")||"无";
-    const emotions=(cm.sprites||[]).map(s=>s.emotion).filter(Boolean).join("/")||"normal";
-    return `【陪同者${i+1}】姓名：${cm.name||"—"}｜性别：${cm.gender||"—"}｜年龄：${cm.age||"—"}｜身份：${cm.role||"—"}
+    const cmS=(cm.status||[]).filter(s=>s.key).map(s=>`${s.key}:${s.value}`).join(" | ")||"无";
+    const emos=(cm.sprites||[]).map(s=>s.emotion).filter(Boolean).join("/")||"normal";
+    return `【陪同者${i+1}】姓名：${cm.name||"—"}｜性别：${cm.gender||"—"}｜身份：${cm.role||"—"}
 性格：${cm.personality||"—"}｜外貌：${cm.appearance||"—"}
-背景：${cm.background||"—"}｜与主角关系：${cm.relation||"—"}
-状态：${cmStatus}｜可用立绘情绪：${emotions}`;
-  }).join("\n\n"):"（无陪同者）";
-  const npcBlock=App.npcs.length?App.npcs.map(n=>`· ${n.name||"路人"}（${n.role||"—"}）：${n.desc||"—"}`).join("\n"):"（AI 自由生成）";
+背景：${cm.background||"—"}｜关系：${cm.relation||"—"}
+状态：${cmS}｜立绘情绪：${emos}`;
+  }).join("\n\n"):"（无）";
+  const npcBlock=App.npcs.length?App.npcs.map(n=>`· ${n.name||"路人"}（${n.role||"—"}）：${n.desc||"—"}`).join("\n"):"（自由生成）";
   const memPin=App.memories.filter(m=>m.level==='pin').map(m=>"• "+m.text).join("\n");
   const memHigh=App.memories.filter(m=>m.level==='high').map(m=>"• "+m.text).join("\n");
   const memMid=App.memories.filter(m=>m.level==='mid').map(m=>"• "+m.text).join("\n");
   const bs=c.boundScript?App.scripts.find(s=>s.id===c.boundScript):null;
-  const scriptBlock=bs?`═══ 绑定剧本《${bs.title}》(${bs.theme||"自定义"}) ═══
+  const scriptBlock=bs?`═══ 绑定剧本《${bs.title}》═══
 ${bs.summary||""}
 开端：${bs.opening||""}
 大纲：${bs.outline||""}
 关键事件：${bs.keyEvents||""}
-结局：${bs.ending||""}
-用户偏好：${bs.userPref||""}`:"";
-  
-  return `你是顶级 Galgame 视觉小说叙事引擎。
+结局：${bs.ending||""}`:"";
+  return `你是顶级 Galgame 文字冒险叙事引擎。
 
 ═══ 世界观 ═══
 ${c.worldSetting||"（未设定）"}
-
 ═══ 主角 ═══
 ${userBlock}
-
 ═══ 陪同者 ═══
 ${compBlock}
-
 ═══ NPC ═══
 ${npcBlock}
-
 ${App.currentLoc?`═══ 当前位置 ═══\n${App.currentLoc}\n`:""}
 ${memPin?`═══ 📌 永久铁律 ═══\n${memPin}\n`:""}
 ${memHigh?`═══ 🔴 核心记忆 ═══\n${memHigh}\n`:""}
@@ -1628,37 +1777,43 @@ ${scriptBlock}
 ${c.extraInstruction?`═══ 临时指令 ═══\n${c.extraInstruction}\n`:""}
 
 ═══ VN 输出格式 ═══
-回复中可使用以下标签（按需）：
-1. [场景:简短描述] 切换背景
-2. [立绘:陪同者姓名:情绪标签] 切换立绘
-3. 角色名「对白内容」 角色对白
-4. [状态:角色名:字段:新值] 状态变更
+1. [场景:描述] 切换背景
+2. [立绘:陪同者:情绪] 显示立绘
+3. 角色名「对白」 角色发言
+4. [状态:角色名:字段:新值] 状态变更（无上限，可超 100%或负数；可新建字段）
 5. 选项（必须 3-4 个）：
 [选项A]：行动
 [选项B]：行动
 [选项C]：行动
 
-═══ 铁律 ═══
+═══ 文风铁律 ═══
 1. 严格基于前文与记忆推进，不可凭空捏造。
-2. 角色一致性：陪同者言行严格符合档案。
-3. 第二人称叙事，文笔细腻。
-4. 不替玩家做关键决定。每次必须给选项。
-5. 直接进入叙事，不解释、不出戏。`;
+2. 角色一致性。第二人称叙事。
+3. 不替玩家做关键决定。每次必须给选项。
+4. **每句话独立成段，用换行分隔**（前端会做逐句点击展示）。
+5. 状态变更要合理：好感度可超过 100% 表示沉迷，可为负数表示厌恶；HP/魔力等可超出上限或变负。`;
 }
 
-// ========== 游戏 ==========
+// 游戏
 function setGenState(g){
-  isGen=g;$("stopBtn").style.display=g?"flex":"none";
-  $("resumeBtn").style.display=!g&&partialOut?"flex":"none";
-  $("gameStatus").textContent=g?"◈ 编织中...":"◈ 引擎就绪";
-  $("actionInput").disabled=g;
+  isGen=g;
+  if($("stopBtn"))$("stopBtn").style.display=g?"flex":"none";
+  if($("resumeBtn"))$("resumeBtn").style.display=!g&&partialOut?"flex":"none";
+  if($("gameStatus"))$("gameStatus").textContent=g?"◈ 编织中...":"◈ 引擎就绪";
+  if($("actionInput"))$("actionInput").disabled=g;
   document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=g);
-  document.querySelector('.send-btn').disabled=g;
 }
-function appendUI(role,content){
+function stripVNTags(content){return content.replace(/\[场景[：:][^\]]+\]/g,'').replace(/\[立绘[：:][^\]]+\]/g,'').replace(/\[状态[：:][^\]]+\]/g,'');}
+
+function appendUI(role,content,idx){
   const area=$("storyArea");const div=document.createElement('div');
+  div.dataset.idx=idx;
   if(role==='system'){div.className="msg msg-system";div.innerHTML=esc(content);}
-  else if(role==='user'){div.className="msg msg-player";div.innerHTML=`<div class="bubble">${esc(content).replace(/\n/g,'<br>')}</div>`;}
+  else if(role==='user'){
+    div.className="msg msg-player";
+    div.innerHTML=`<div class="bubble">${esc(content).replace(/\n/g,'<br>')}
+      <div class="msg-actions"><button onclick="editHistoryMsg(${idx})">编辑</button><button class="del" onclick="delHistoryMsg(${idx})">删</button></div></div>`;
+  }
   else{
     div.className="msg msg-ai";
     let raw=stripVNTags(content),opts='';
@@ -1667,16 +1822,48 @@ function appendUI(role,content){
     while((m=reg.exec(raw))!==null){if(firstIdx===-1)firstIdx=m.index;
       opts+=`<button class="choice-btn" onclick='choiceClick(${JSON.stringify(m[1].trim())})'>${esc(m[1].trim())}</button>`;}
     if(firstIdx!==-1)raw=raw.substring(0,firstIdx).trim();
-    div.innerHTML=`<div class="bubble">${esc(raw).replace(/\n/g,'<br>')}</div>${opts?`<div class="choices-area">${opts}</div>`:''}`;
+    div.innerHTML=`<div class="bubble">${esc(raw).replace(/\n/g,'<br>')}
+      <div class="msg-actions"><button onclick="editHistoryMsg(${idx})">编辑</button><button class="del" onclick="delHistoryMsg(${idx})">删</button></div></div>${opts?`<div class="choices-area">${opts}</div>`:''}`;
   }
   area.appendChild(div);area.scrollTop=area.scrollHeight;return div;
 }
-function stripVNTags(content){return content.replace(/\[场景[：:][^\]]+\]/g,'').replace(/\[立绘[：:][^\]]+\]/g,'').replace(/\[状态[：:][^\]]+\]/g,'');}
-function choiceClick(t){submitAction(t);}
+function choiceClick(t){
+  $("actionInput").value=t;addUserMsg();triggerAI();
+}
 function renderHistory(){
   const area=$("storyArea");area.innerHTML='';
   if(!App.gameHistory.length){area.innerHTML='<div class="msg msg-system">梦境之门已开启 · 在下方书写你的开端</div>';return;}
-  App.gameHistory.forEach(m=>appendUI(m.role,m.content));
+  App.gameHistory.forEach((m,i)=>appendUI(m.role,m.content,i));
+}
+
+// 添加用户消息（不触发 AI）
+function addUserMsg(){
+  const txt=$("actionInput").value.trim();
+  if(!txt)return toast("输入为空");
+  App.gameHistory.push({role:"user",content:txt});
+  $("actionInput").value="";save();renderHistory();
+  if($("vnStage").classList.contains('active'))renderVnMsgList();
+}
+// 触发 AI 生成
+async function triggerAI(){
+  if(isGen)return;
+  if(!App.gameHistory.length||App.gameHistory[App.gameHistory.length-1].role!=='user'){
+    const txt=$("actionInput").value.trim();
+    if(txt){addUserMsg();}
+    else return toast("先添加你的行动");
+  }
+  lastAction=App.gameHistory[App.gameHistory.length-1].content;
+  await runTurn(false);
+}
+// 编辑历史消息
+function editHistoryMsg(idx){
+  const m=App.gameHistory[idx];if(!m)return;
+  const n=prompt("编辑这条消息：",m.content);
+  if(n!==null){m.content=n;save();renderHistory();if($("vnStage").classList.contains('active'))renderVnMsgList();}
+}
+function delHistoryMsg(idx){
+  if(!confirm("删除此消息？"))return;
+  App.gameHistory.splice(idx,1);save();renderHistory();if($("vnStage").classList.contains('active'))renderVnMsgList();
 }
 
 async function runTurn(isResume=false){
@@ -1685,99 +1872,173 @@ async function runTurn(isResume=false){
   const msgs=[{role:"system",content:buildSystemPrompt()},...App.gameHistory];
   if(isResume){msgs.push({role:"assistant",content:partialOut});msgs.push({role:"user",content:"紧接续写,不重复,附选项。"});}
   const inVN=$("vnStage").classList.contains('active');
-  let div=null;
-  if(!inVN){div=appendUI("assistant",isResume?partialOut:"·");}
-  else{vnShowText("…",null,true);}
-  const bubble=div?div.querySelector('.bubble'):null;
+  if(inVN)vnShowText("…",null);
   let cur=isResume?partialOut:"";partialOut="";
   try{
     const useStream=App.config.provider==='openai';
-    if(useStream){await callAI(msgs,true,d=>{cur+=d;
-      if(bubble){bubble.innerHTML=esc(stripVNTags(cur)).replace(/\n/g,'<br>');$("storyArea").scrollTop=$("storyArea").scrollHeight;}
-    });}else{const r=await callAI(msgs,false);cur=(isResume?partialOut:"")+r;}
-    if(div)div.remove();
+    if(useStream){await callAI(msgs,true,d=>{cur+=d;});}
+    else{const r=await callAI(msgs,false);cur=(isResume?partialOut:"")+r;}
     if(isResume)App.gameHistory[App.gameHistory.length-1].content+=cur;
     else App.gameHistory.push({role:"assistant",content:cur});
     const finalContent=isResume?App.gameHistory[App.gameHistory.length-1].content:cur;
-    if(!inVN)appendUI("assistant",finalContent);
-    if(inVN)processVNOutput(finalContent);
+    renderHistory();
+    if(inVN){renderVnMsgList();processVNOutput(finalContent);}
+    else processStateOnly(finalContent);
     App.roundCount=(App.roundCount||0)+1;save();
-    if(App.roundCount>0&&App.roundCount%8===0){if(!inVN)appendUI("system","（自动归档...）");autoSummarize();}
+    if(App.roundCount>0&&App.roundCount%8===0){autoSummarize();}
   }catch(e){
-    if(e.name==="AbortError"){partialOut=cur;if(div)div.remove();
-      if(!inVN)appendUI("system","已中断");else vnShowText("（已中断）",null);
-    }else{
-      if(div)div.remove();
-      if(!inVN)appendUI("system","⚠ "+e.message);else vnShowText("⚠ "+e.message,null);
-      if(!isResume)App.gameHistory.pop();
-    }
+    if(e.name==="AbortError"){partialOut=cur;toast("已中断",'err');}
+    else{toast("⚠ "+e.message,'err');if(!isResume)App.gameHistory.pop();renderHistory();}
   }finally{setGenState(false);}
 }
 
-function submitAction(txt){
-  if(isGen)return;if(!txt)txt=$("actionInput").value;
-  if(!txt||!txt.trim())return;lastAction=txt;
-  if(App.gameHistory.length===0){
-    App.gameHistory.push({role:"user",content:`【开场】：${txt}\n请基于世界观开启故事，按 VN 格式输出。`});
-    if(!$("vnStage").classList.contains('active'))appendUI("user",txt);
-  }else{
-    if(!$("vnStage").classList.contains('active'))appendUI("user",txt);
-    App.gameHistory.push({role:"user",content:`【行动】：${txt}`});
+function processStateOnly(content){
+  const statusRegex=/\[状态[：:]([^：:\]]+)[：:]([^：:\]]+)[：:]([^\]]+)\]/g;
+  let stm,changed=false;
+  while((stm=statusRegex.exec(content))!==null){
+    const charName=stm[1].trim(),field=stm[2].trim(),val=stm[3].trim();
+    if(charName==='主角'||charName===(App.config.user.name||'')){
+      if(!App.config.user.status)App.config.user.status=[];
+      const ex=App.config.user.status.find(s=>s.key===field);
+      if(ex)ex.value=val;else App.config.user.status.push({key:field,value:val});
+      changed=true;
+    }else{
+      const c=App.companions.find(x=>(x.name||"").includes(charName)||charName.includes(x.name||""));
+      if(c){if(!c.status)c.status=[];const ex=c.status.find(s=>s.key===field);
+        if(ex)ex.value=val;else c.status.push({key:field,value:val});changed=true;}
+    }
   }
-  $("actionInput").value="";save();runTurn();
+  if(changed){save();renderUserStatus();}
 }
+
 function abortGen(){if(abortCtrl)abortCtrl.abort();}
 function resumeGen(){if(partialOut)runTurn(true);}
 function rerollLast(){
   if(App.gameHistory.length<2)return toast("无可重写");
   if(!confirm("撤销并重生？"))return;
   App.gameHistory.pop();App.gameHistory.pop();save();renderHistory();
-  if(lastAction)submitAction(lastAction);
+  if($("vnStage").classList.contains('active'))renderVnMsgList();
+  if(lastAction){App.gameHistory.push({role:"user",content:lastAction});save();runTurn();}
 }
 function resetGame(){
-  if(!confirm("清空对话？"))return;
+  if(!confirm("清空？"))return;
   App.gameHistory=[];App.currentLoc="";App.roundCount=0;partialOut="";
-  $("gameLoc").innerText="未知之境";save();renderHistory();toast("◈ 已重启",'ok');
+  $("gameLoc").innerText="未知";save();renderHistory();
+  if($("vnStage").classList.contains('active')){renderVnMsgList();vnShowText("梦境已重启 · 在下方添加你的开端。",null);}
+  toast("◈ 已重启",'ok');
 }
 
-// ========== VN ==========
+// ====== VN（逐句点击 + 多消息）======
 function enterVNMode(){
   $("vnStage").classList.add('active');document.body.style.overflow='hidden';
-  updateVNBg();updateVNStatusbar();
+  refreshConfigUI();updateVNBg();updateVNStatusbar();
   const lastAI=[...App.gameHistory].reverse().find(m=>m.role==='assistant');
   if(lastAI)processVNOutput(lastAI.content);
-  else vnShowText("梦境即将开启…\n\n点击「💭 自由发言」开启故事。",null);
+  else vnShowText("梦境即将开启…\n\n点击「💭 发言」添加开场，再点「▶ AI 继续」生成剧情。",null);
 }
 function exitVNMode(){
   $("vnStage").classList.remove('active');document.body.style.overflow='';
-  $("vnInputBar").classList.remove('active');
-  if(vnTypingTimer){clearInterval(vnTypingTimer);vnTypingTimer=null;}
+  $("vnInputBar").style.display='none';
+  $("vnMsgList").classList.remove('active');
+  $("vnChoices").classList.remove('active');
+}
+function toggleAutoGenBg(){
+  App.config.autoGenBg=!App.config.autoGenBg;save();
+  $("autoGenBgBtn").textContent=App.config.autoGenBg?"🖼 自动:开":"🖼 自动:关";
+  $("autoGenBgBtn").classList.toggle('on',App.config.autoGenBg);
+  toast(App.config.autoGenBg?"◈ 自动:开":"◈ 自动:关",'ok');
 }
 function updateVNBg(){
   const bg=App.config.vnCurrentBg;
   if(bg)$("vnBg").style.backgroundImage=`url(${bg})`;else $("vnBg").style.backgroundImage="";
 }
+
+// 解析状态值（支持负值、超过 100%、纯数字、数字/上限）
+function parseStatusVal(val){
+  if(val==null)return null;
+  const str=String(val).trim();
+  // current/max
+  let m=str.match(/^(-?[\d.]+)\s*\/\s*(-?[\d.]+)$/);
+  if(m){
+    const cur=parseFloat(m[1]),max=parseFloat(m[2]);
+    return {cur,max,display:str,hasBar:true};
+  }
+  // 百分比
+  m=str.match(/^(-?[\d.]+)\s*%$/);
+  if(m){
+    const cur=parseFloat(m[1]);
+    return {cur,max:100,display:str,hasBar:true};
+  }
+  return {display:str,hasBar:false};
+}
 function updateVNStatusbar(){
-  const bar=$("vnStatusbar");bar.innerHTML="";
+  const bar=$("vnStatusbar");if(!bar)return;bar.innerHTML="";
+  function buildCard(name,status){
+    if(!status||!status.filter(s=>s.key).length)return"";
+    const lines=status.filter(s=>s.key).map(s=>{
+      const p=parseStatusVal(s.value);
+      if(p&&p.hasBar){
+        let pct=p.max!==0?(p.cur/p.max*100):0;
+        const overflow=pct>100;const neg=pct<0;
+        // 显示比例 clamp 到 0-150% (超过 150 显示满)
+        const displayPct=Math.max(0,Math.min(150,pct));
+        const cls=overflow?"over":(neg?"neg":"");
+        return `<div class="vn-status-line"><span class="k">${esc(s.key)}</span><div class="vn-status-bar"><div class="vn-status-bar-fill ${cls}" style="width:${displayPct/1.5}%;"></div></div><span class="v">${esc(p.display)}</span></div>`;
+      }
+      return `<div class="vn-status-line"><span class="k">${esc(s.key)}</span><span class="v">${esc(p?p.display:s.value)}</span></div>`;
+    }).join("");
+    return `<div class="vn-status-card"><div class="vn-status-name">${esc(name)}</div>${lines}</div>`;
+  }
   const u=App.config.user;
   if(u&&u.status&&u.status.filter(s=>s.key).length){
-    bar.insertAdjacentHTML('beforeend',`<div class="vn-status-card"><div class="vn-status-name">${esc(u.name||"主角")}</div>
-      ${u.status.filter(s=>s.key).map(s=>`<div class="vn-status-line"><span class="k">${esc(s.key)}</span><span class="v">${esc(s.value)}</span></div>`).join("")}</div>`);
+    bar.insertAdjacentHTML('beforeend',buildCard(u.name||"主角",u.status));
   }
   App.companions.forEach(c=>{
     if(c.status&&c.status.filter(s=>s.key).length){
-      bar.insertAdjacentHTML('beforeend',`<div class="vn-status-card"><div class="vn-status-name">${esc(c.name||"陪同者")}</div>
-        ${c.status.filter(s=>s.key).map(s=>`<div class="vn-status-line"><span class="k">${esc(s.key)}</span><span class="v">${esc(s.value)}</span></div>`).join("")}</div>`);
+      bar.insertAdjacentHTML('beforeend',buildCard(c.name||"陪同者",c.status));
     }
   });
 }
+
+async function autoGenerateBackground(sceneDesc){
+  if(isAutoGenBgBusy||!App.config.imgBaseUrl)return;
+  isAutoGenBgBusy=true;
+  try{
+    toast("◈ 生成背景...");
+    const url=await callImgAPI(`scenery, no humans, ${sceneDesc}, detailed background, atmospheric lighting`,"low quality");
+    App.config.vnCurrentBg=url;
+    App.gallery.unshift({id:uid(),url,prompt:"[自动]"+sceneDesc.slice(0,40),time:Date.now()});
+    save();updateVNBg();toast("◈ 背景已生成",'ok');
+  }catch(e){toast("自动生图失败",'err');}finally{isAutoGenBgBusy=false;}
+}
+
+// 把整段拆成句子数组
+function splitSentences(text){
+  if(!text)return [];
+  // 先按换行拆，再按句号/问号/感叹号拆
+  const lines=text.split(/\n/).map(l=>l.trim()).filter(Boolean);
+  const result=[];
+  lines.forEach(line=>{
+    // 保留对话「」整体
+    const segs=line.match(/[^。？！…]+[。？！…]+[」』）)]*|[^。？！…]+$/g);
+    if(segs){
+      segs.forEach(s=>{const t=s.trim();if(t)result.push(t);});
+    }else{result.push(line);}
+  });
+  return result;
+}
+
 function processVNOutput(content){
+  // 场景
   const sceneM=content.match(/\[场景[：:]([^\]]+)\]/);
+  let bgChanged=false;
   if(sceneM){
     const desc=sceneM[1].trim();
     const matched=App.gallery.find(g=>(g.prompt||"").toLowerCase().includes(desc.toLowerCase().slice(0,10)));
-    if(matched){App.config.vnCurrentBg=matched.url;save();updateVNBg();}
+    if(matched){App.config.vnCurrentBg=matched.url;save();updateVNBg();bgChanged=true;}
+    if(!bgChanged&&App.config.autoGenBg&&App.config.imgBaseUrl)autoGenerateBackground(desc);
   }
+  // 立绘
   const spriteRegex=/\[立绘[：:]([^：:\]]+)[：:]([^\]]+)\]/g;
   const sprites={};let sm;
   while((sm=spriteRegex.exec(content))!==null){
@@ -1794,6 +2055,7 @@ function processVNOutput(content){
     const img=document.createElement('img');img.className=`vn-sprite ${positions[i]} fade-in`;
     img.src=sprites[n];sprBox.appendChild(img);
   });
+  // 状态
   const statusRegex=/\[状态[：:]([^：:\]]+)[：:]([^：:\]]+)[：:]([^\]]+)\]/g;
   let stm;
   while((stm=statusRegex.exec(content))!==null){
@@ -1808,79 +2070,152 @@ function processVNOutput(content){
         if(ex)ex.value=val;else c.status.push({key:field,value:val});}
     }
   }
-  save();updateVNStatusbar();
+  save();updateVNStatusbar();renderUserStatus();
+  
+  // 解析选项
   let textPart=stripVNTags(content);
   const choiceRegex=/[\[【]选项[A-Ea-e][\]】][：:]\s*(.+)/g;
   const choices=[];let cm,fIdx=-1;
-  while((cm=choiceRegex.exec(textPart))!==null){
-    if(fIdx===-1)fIdx=cm.index;choices.push(cm[1].trim());
-  }
+  while((cm=choiceRegex.exec(textPart))!==null){if(fIdx===-1)fIdx=cm.index;choices.push(cm[1].trim());}
   if(fIdx!==-1)textPart=textPart.substring(0,fIdx).trim();
-  const nameMatch=textPart.match(/([^\s\n]+?)[「『]([^」』]+)[」』]/g);
-  let speakerName=null;
-  if(nameMatch&&nameMatch.length){
-    const last=nameMatch[nameMatch.length-1];
-    const m2=last.match(/^([^「『]+)[「『]/);
-    if(m2)speakerName=m2[1].trim();
-  }
-  textPart=textPart.replace(/[「『]([^」』]+)[」』]/g,'<span class="quote">「$1」</span>');
-  vnShowText(textPart,speakerName);
-  setTimeout(()=>{
-    const cBox=$("vnChoices");cBox.innerHTML="";
-    if(choices.length){
-      choices.forEach(c=>{
+  vnPendingChoices=choices;
+  
+  // 拆句
+  vnSentences=splitSentences(textPart);
+  vnSentIdx=0;
+  $("vnChoices").classList.remove('active');
+  vnShowNextSentence();
+}
+
+function vnShowNextSentence(){
+  if(vnSentIdx>=vnSentences.length){
+    // 所有句子已读完 → 显示选项
+    if(vnPendingChoices.length){
+      const cBox=$("vnChoices");cBox.innerHTML="";
+      vnPendingChoices.forEach(c=>{
         const b=document.createElement('button');b.className='vn-choice-btn';
-        b.textContent=c;b.onclick=()=>{cBox.style.display='none';submitAction(c);};
+        b.textContent=c;b.onclick=(ev)=>{ev.stopPropagation();cBox.classList.remove('active');
+          $("actionInput").value=c;addUserMsg();triggerAI();};
         cBox.appendChild(b);
       });
-      cBox.style.display='flex';
-    }else cBox.style.display='none';
-  },800);
+      cBox.classList.add('active');
+    }
+    $("vnTextbox").classList.remove('has-more');
+    return;
+  }
+  const sentence=vnSentences[vnSentIdx];
+  vnSentIdx++;
+  // 解析说话人
+  const nameMatch=sentence.match(/^([^「『\s]+)[「『]/);
+  let speaker=null,text=sentence;
+  if(nameMatch){speaker=nameMatch[1].trim();}
+  // 染金对白
+  text=text.replace(/[「『]([^」』]+)[」』]/g,'<span class="quote">「$1」</span>');
+  vnShowText(text,speaker);
+  // 是否还有更多句
+  if(vnSentIdx<vnSentences.length||vnPendingChoices.length){
+    $("vnTextbox").classList.add('has-more');
+  }else{
+    $("vnTextbox").classList.remove('has-more');
+  }
 }
-function vnShowText(text,speaker,isLoading){
-  if(vnTypingTimer){clearInterval(vnTypingTimer);vnTypingTimer=null;}
+
+function vnShowText(text,speaker){
   if(speaker){$("vnName").style.display='inline-block';$("vnName").textContent=speaker;}
   else{$("vnName").style.display='none';}
-  vnFullText=text;vnCurrentIdx=0;$("vnText").innerHTML="";
-  if(isLoading){$("vnText").innerHTML='<span class="vn-typing"></span>';return;}
-  vnTypingTimer=setInterval(()=>{
-    if(vnCurrentIdx>=vnFullText.length){clearInterval(vnTypingTimer);vnTypingTimer=null;return;}
-    vnCurrentIdx+=2;$("vnText").innerHTML=vnFullText.slice(0,vnCurrentIdx);
-  },20);
+  $("vnText").innerHTML=text;
 }
-function vnAdvance(){if(vnTypingTimer){clearInterval(vnTypingTimer);vnTypingTimer=null;$("vnText").innerHTML=vnFullText;vnCurrentIdx=vnFullText.length;}}
-function vnSay(){$("vnInputBar").classList.add('active');$("vnInput").focus();}
-function vnInputCancel(){$("vnInputBar").classList.remove('active');$("vnInput").value="";}
+
+function vnAdvance(){
+  // 点击文本框 → 下一句
+  if(vnSentences.length===0)return;
+  if(vnSentIdx<vnSentences.length||vnPendingChoices.length){
+    vnShowNextSentence();
+  }
+}
+
+function vnSay(){$("vnInputBar").style.display='flex';$("vnMsgList").classList.remove('active');$("vnInput").focus();}
+function vnInputCancel(){$("vnInputBar").style.display='none';$("vnInput").value="";}
 function vnSubmitInput(){
   const t=$("vnInput").value.trim();if(!t)return;
-  $("vnInputBar").classList.remove('active');$("vnInput").value="";
-  $("vnChoices").style.display='none';
-  submitAction(t);
+  $("vnInputBar").style.display='none';$("vnInput").value="";
+  $("vnChoices").classList.remove('active');
+  App.gameHistory.push({role:"user",content:t});save();
+  renderHistory();renderVnMsgList();
+  // 在 VN 中显示一条提示
+  vnSentences=[`（你：${t}）\n点击「▶ AI 继续」让剧情发展。`];vnSentIdx=0;vnPendingChoices=[];
+  vnShowNextSentence();
 }
-function vnRetry(){rerollLast();}
+
+function vnTriggerAI(){
+  $("vnChoices").classList.remove('active');
+  triggerAI();
+}
+
+function vnShowMsgList(){
+  const list=$("vnMsgList");
+  if(list.classList.contains('active')){list.classList.remove('active');return;}
+  renderVnMsgList();list.classList.add('active');
+}
+function renderVnMsgList(){
+  const list=$("vnMsgList");list.innerHTML="";
+  if(!App.gameHistory.length){list.innerHTML='<div style="text-align:center;color:var(--text-dim);padding:10px;">暂无消息</div>';return;}
+  App.gameHistory.forEach((m,idx)=>{
+    const div=document.createElement('div');
+    div.className='vn-msg-item '+(m.role==='user'?'user':'ai');
+    div.innerHTML=`<span class="role">${m.role==='user'?'你':'AI'}</span>
+      <div class="txt" data-idx="${idx}">${esc(stripVNTags(m.content)).slice(0,200)}</div>
+      <div class="acts">
+        <button onclick="vnEditMsg(${idx})">编</button>
+        <button class="del" onclick="vnDelMsg(${idx})">删</button>
+      </div>`;
+    list.appendChild(div);
+  });
+  // 滚到底
+  list.scrollTop=list.scrollHeight;
+}
+function vnEditMsg(idx){
+  const m=App.gameHistory[idx];if(!m)return;
+  const n=prompt("编辑这条消息：",m.content);
+  if(n!==null){m.content=n;save();renderHistory();renderVnMsgList();}
+}
+function vnDelMsg(idx){
+  if(!confirm("删除？"))return;
+  App.gameHistory.splice(idx,1);save();renderHistory();renderVnMsgList();
+}
+
 function vnSetBg(){
-  if(!App.gallery.length)return toast("图库为空，先去[绘卷]上传");
+  if(!App.gallery.length)return toast("图库为空");
   const grid=$("picModalGrid");grid.innerHTML="";
-  $("picModalTitle").textContent="选择背景图";
+  $("picModalTitle").textContent="选择背景";
   App.gallery.forEach(g=>{
     const div=document.createElement('div');div.className='gallery-item';
     div.innerHTML=`<img src="${g.url}"><div class="gallery-meta"><span>${esc((g.prompt||"").slice(0,15))}</span></div>`;
-    div.onclick=()=>{App.config.vnCurrentBg=g.url;save();updateVNBg();closeModal('picModal');toast("◈ 已切换",'ok');};
+    div.onclick=()=>{App.config.vnCurrentBg=g.url;save();updateVNBg();closeModal('picModal');toast("◈ 已切",'ok');};
     grid.appendChild(div);
   });
   $("picModal").classList.add('show');
 }
 function vnLog(){
   const log=$("vnLogContent");log.innerHTML="";
-  App.gameHistory.forEach(m=>{
-    const role=m.role==='user'?'<b style="color:var(--accent);">你</b>':'<b style="color:var(--gold);">叙述</b>';
-    log.innerHTML+=`<div style="margin-bottom:14px;padding:10px;background:var(--bg-input);border-radius:3px;">${role}: ${esc(stripVNTags(m.content)).replace(/\n/g,'<br>')}</div>`;
-  });
+  if(!App.gameHistory.length){log.innerHTML='<div class="empty-state">无</div>';}
+  else{
+    App.gameHistory.forEach((m,idx)=>{
+      const role=m.role==='user'?'<b style="color:var(--accent);">你</b>':'<b style="color:var(--gold);">叙述</b>';
+      log.innerHTML+=`<div style="margin-bottom:14px;padding:10px;background:var(--bg-input);border-radius:3px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span>${role}</span>
+          <div><button class="btn btn-ghost" style="padding:2px 8px;font-size:0.7rem;" onclick="vnEditMsg(${idx});closeModal('vnLogModal');setTimeout(vnLog,200);">编</button>
+          <button class="btn btn-danger" style="padding:2px 8px;font-size:0.7rem;" onclick="vnDelMsg(${idx});setTimeout(vnLog,200);">删</button></div>
+        </div>
+        ${esc(stripVNTags(m.content)).replace(/\n/g,'<br>')}
+      </div>`;
+    });
+  }
   $("vnLogModal").classList.add('show');
 }
 
-// ========== 事件 ==========
-$("actionInput").addEventListener("keypress",e=>{if(e.key==='Enter')submitAction();});
+$("actionInput").addEventListener("keypress",e=>{if(e.key==='Enter'){addUserMsg();}});
 $("vnInput").addEventListener("keypress",e=>{if(e.key==='Enter')vnSubmitInput();});
 
 function refreshAll(){
@@ -1891,25 +2226,28 @@ function refreshAll(){
 
 load();refreshAll();
 
-// 暴露所有函数到 window
 Object.assign(window,{
   saveConfig,testApi,fetchModels,exportAll,importAll,
   saveApiPreset,loadApiPreset,delApiPreset,
-  aiParseDocToUser,aiParseDocToCompanion,
+  aiParseDocToUser,aiParseDocToCompanion,importCodexJson,
   uploadSprites,updateSpriteEmotion,delSprite,
   addCompanion,updateCompanion,delCompanion,addCompStatus,updCompStatus,delCompStatus,
   addNpc,updateNpc,delNpc,
   addStatusField,addStatusFieldUI,collectStatusFields,
+  addCodexItem,updCodexItem,toggleCodex,delCodexItem,aiGenCodex,
   addMem,delMem,editMem,cycleLevel,clearAllMem,autoSummarize,renderMem,
   addNode,closePopup,teleportToNode,toggleNodeLock,editNodeDesc,saveNodeEdit,closeModal,aiGenMap,
-  mapZoom,mapResetView,clearMap:function(){if(confirm("清空？")){App.mapNodes=[];save();renderMap();}},
+  mapZoom,mapResetView,
   createSave,loadSave,overwriteSave,renameSave,delSave,
-  createScript,updateScript,delScript,bindScriptToGame,exportScript,importScriptDoc,
+  createScript,updateScript,updateScriptStatus,delScript,bindScriptToGame,exportScript,importScriptDoc,
   openThemePicker,renderThemes,openPrefDialog,generateScriptFromTheme,regenScript,
   applyCustomCSS,loadDefaultCSS,loadThemePreset,
   previewRef,aiEnhancePrompt,generateImage,uploadLocalImages,delGalleryItem,clearGallery,useGalleryItem,blobToDataURL,
-  submitAction,abortGen,resumeGen,rerollLast,resetGame,choiceClick,
-  enterVNMode,exitVNMode,vnSay,vnInputCancel,vnSubmitInput,vnRetry,vnSetBg,vnLog,vnAdvance
+  testImgApi,fetchImgModels,callImgAPI,
+  addUserMsg,triggerAI,editHistoryMsg,delHistoryMsg,
+  abortGen,resumeGen,rerollLast,resetGame,choiceClick,
+  enterVNMode,exitVNMode,toggleAutoGenBg,vnSay,vnInputCancel,vnSubmitInput,vnSetBg,vnLog,vnAdvance,vnTriggerAI,
+  vnShowMsgList,vnEditMsg,vnDelMsg
 });
 </script>
 </body>
